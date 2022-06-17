@@ -263,16 +263,14 @@ int main()
     lame(0,0);
 }
 void lame(int sc,int k) //To exit the game when the snake bites itself
-{   
-    int a=0;
+{  
     do{
         if(k==420)
-    {
-        cout<<"LOST";
-        cout<<"\nScore:"<<sc;
-        exit(0);
-    }
+        {
+            cout<<"LOST";
+            cout<<"\nScore:"<<sc;
+            exit(0);
+        }
         takin();
-        
-    }while(a<200);
+    }while(1);
 }
