@@ -25,20 +25,20 @@ void lame(int,int);
 int value = 2;
 int choice = 1;
 int step = 0;
+int time_ = 0;
 int toy[96]={0};
+int p[100-1] = {0};
 void calc(int);
 void helpscreen();
 
-
-
-void decide()
+void randomize()
 {
-    srand (time(NULL));
-    choice = rand() % 4 + 1;   
-    cout<<choice;
+    srand((unsigned) time(0));
+    for (short index = 0; index < 100; index++) 
+    {
+        p[index] = (rand() % 4) + 1;
+    }
 }
-
-
 
 void read_value() //inputting value from user
 {   
@@ -137,6 +137,7 @@ void kill(int value) //Converts user input to the direction snake must move and 
 void calc(int n)   //Brain of the program. Entire game operation happens here. 
 {
     int l;
+    time_++;
     system("clear");
     int i ;
     
@@ -147,14 +148,14 @@ void calc(int n)   //Brain of the program. Entire game operation happens here.
         {
             toy[n] = 1;
             step = 1;
-            decide();
+            choice = p[time_];
         }break;
         case 2:
         if(toy[n+7]==2||toy[n+7]==1||toy[n+6]==2||toy[n+6]==1||toy[n]==2||toy[n]==1||toy[n-1]==2||toy[n-1]==1)
         {
             toy[n] = 1;toy[n+1] = 1;toy[n-6] = 1;toy[n-7] = 1;
             step = 1;
-            decide();
+            choice = p[time_];
         }break;
         case 3:
         if(toy[n+7]==2||toy[n+7]==1||toy[n+6]==2||toy[n+6]==1)
@@ -162,14 +163,14 @@ void calc(int n)   //Brain of the program. Entire game operation happens here.
         
             toy[n] = 1;toy[n+1] = 1;
             step = 1;
-            decide();
+            choice = p[time_];
         }break;
         case 4:
         if(toy[n+7]==2||toy[n+7]==1||toy[n+6]==2||toy[n+6]==1||toy[n+5]==2||toy[n+5]==1||toy[n+8]==2||toy[n+8]==1)
         {
             toy[n] = 1;toy[n+1] = 1;toy[n-1] = 1;toy[n+2] = 1;
             step = 1;
-            decide();
+            choice = p[time_];
         }
         
     }
@@ -256,6 +257,7 @@ void calc(int n)   //Brain of the program. Entire game operation happens here.
 int main()  
 {   
     int i;
+    randomize();
     for(i=0;i<6;i++)
     {
         toy[90+i]=2;
