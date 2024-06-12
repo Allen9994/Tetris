@@ -21,6 +21,7 @@ using namespace std;
 short score = 0;
 short points = 0;
 short i,j;
+bool flag = false;
 short temp = 0;
 char wall[] = {':','|'};
 const short side = 10;
@@ -46,6 +47,20 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
+void demolish()
+{
+    j = area-1;
+    while(j > 0)
+    {
+        if (j%10 != 0 and map[j] != ' ') flag = true;
+        else j = (j/10)*10 - 1;
+        if (flag == true)
+        {
+            map[j] = map[j+side];
+        }
+        j--;
+    }flag = false;
+}
 void convert()
 {
     switch (p[counter])
@@ -112,7 +127,7 @@ void shape()
         if (map[head+side+1] == 'x') head = 2;
     }
     if (map[head+side] == 'x') head = 2;
-    if (head>= area-side && head <= area) head = 2;
+    if (head >= area-side && head <= area) head = 2;
 }
 void read_value() //inputting value from user
 {   
@@ -158,6 +173,7 @@ void process()   //Brain of the program. Entire game operation happens here.
     value = 'q';
     shape();
     if (head == 2) {
+        demolish();
         counter++;
         convert();
     }
