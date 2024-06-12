@@ -24,8 +24,8 @@ short i,j;
 char wall[] = {':','|'};
 const short side = 10;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = 2;
-char value = 'd';
+short speed = 1000, level = 2, pace = 1, head = 5;
+char value = 'q';
 short p[area-1] = {0};
 vector<int> trail(1, 0); 
 string map(area,' ');
@@ -96,16 +96,16 @@ void take_input() //function to accept the value parallelly while game is procee
 void control(char value) //Converts user input to the direction snake must move and stores all the movements into the array
 {
     last = head;
-    if (value == 'd' && map[head+1] != 'x') head++;
-    if (value == 'a' && map[head-1] != 'x') head--;
+    if (value == 'd' && map[head+1] != 'x' && head%10 != 8) head++;
+    if (value == 'a' && map[head-1] != 'x' && head%10 != 0) head--;
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
 {
     system("clear");
+    cout<<head<<endl;
     if (map[head+side] == 'x' && head <= side) gameToggle(side,false);
     head+=side;
-    cout<<head;
     value = 'q';
     map[head] = 'x';
     map[last] = ' ';
@@ -120,6 +120,8 @@ void display()
     {   
         for (i=0;i<side;i++)
         {
+            if(i == side-1 || i == 0)       cout<<"|";
+            if(i == side-1 && j == side-1)  cout<<endl<<bline;
             cout<<map[(j*side)+i];
         }
         cout<<endl;
