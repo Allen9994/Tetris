@@ -21,16 +21,19 @@ using namespace std;
 short score = 0;
 short points = 0;
 short i,j;
+short temp = 0;
 char wall[] = {':','|'};
 const short side = 10;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = 5;
+short speed = 1000, level = 2, pace = 1, head = 2;
 char value = 'q';
 short p[area-1] = {0};
 vector<int> trail(1, 0); 
 string map(area,' ');
 short highscore = 0;
 short last = 0;
+short length = 0;
+short counter = 2;
 string uline(side+1,'_');
 string bline(side+1,'"');
 
@@ -43,15 +46,60 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
+void convert()
+{
+    switch p[counter]
+    {
+        case 1:length = 1;break;
+        case 2:length = 2;break;
+        case 3:length = 3;break;
+        case 4:length = 4;break;
+        case 5:length = 1;break;
+        case 6:length = 2;break;
+        case 7:length = 2;break;
+    }
+}
 void randomize()
 {
     srand((unsigned) time(0));
     for (short index = 0; index < area/2; index++) 
     {
-        p[index] = (rand() % area-2) + 1;
+        p[index] = (rand() % 4) + 1;
     }
 }
-
+void shape()
+{
+    map[head] = 'x';
+    map[last] = ' ';
+    if(p[counter] == 2)
+    {
+        map[head+1] = 'x';
+        map[last+1] = ' ';
+        if (map[head+side+1] == 'x') head = 2;
+    }
+    if(p[counter] == 3)
+    {
+        map[head+1] = 'x';
+        map[last+1] = ' ';
+        map[head-side+1] = 'x';
+        map[last-side+1] = ' ';
+        map[head-side+2] = 'x';
+        map[last-side+2] = ' ';
+        if (map[head+side+1] == 'x' || map[head+2] == 'x') head = 2;
+    }
+    if(p[counter] == 4)
+    {
+        map[head+1] = 'x';
+        map[last+1] = ' ';
+        map[head+2] = 'x';
+        map[last+2] = ' ';
+        map[head+3] = 'x';
+        map[last+3] = ' ';
+        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = 2;
+    }
+    if (map[head+side] == 'x') head = 2;
+    if (head>= area-side && head <= area) head = 2;
+}
 void read_value() //inputting value from user
 {   
     static struct termios oldt, newt;
@@ -96,21 +144,22 @@ void take_input() //function to accept the value parallelly while game is procee
 void control(char value) //Converts user input to the direction snake must move and stores all the movements into the array
 {
     last = head;
-    if (value == 'd' && map[head+1] != 'x' && head%10 != 8) head++;
-    if (value == 'a' && map[head-1] != 'x' && head%10 != 0) head--;
+    if (value == 'd' && map[head+length+1] != 'x' && head%side != side-length-1) head++;
+    if (value == 'a' && map[head-1] != 'x' && head%side != 0) head--;
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
 {
     system("clear");
-    cout<<head<<endl;
     if (map[head+side] == 'x' && head <= side) gameToggle(side,false);
     head+=side;
+    cout<<head<<endl;
     value = 'q';
-    map[head] = 'x';
-    map[last] = ' ';
-    if (map[head+side] == 'x') head = 2;
-    if (head>= area-side && head <= area) head = 2;
+    shape();
+    if (head == 2) {
+        counter++;
+        convert();
+    }
     display();
 }
 void display()
