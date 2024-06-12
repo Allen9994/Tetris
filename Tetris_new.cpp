@@ -25,7 +25,7 @@ short temp = 0;
 char wall[] = {':','|'};
 const short side = 10;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = 2;
+short speed = 1000, level = 2, pace = 1, head = 22;
 char value = 'q';
 short p[area-1] = {0};
 vector<int> trail(1, 0); 
@@ -48,7 +48,7 @@ void speedSelector();
 
 void convert()
 {
-    switch p[counter]
+    switch (p[counter])
     {
         case 1:length = 1;break;
         case 2:length = 2;break;
@@ -62,9 +62,9 @@ void convert()
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area/2; index++) 
+    for (short index = 0; index < area; index++) 
     {
-        p[index] = (rand() % 4) + 1;
+        p[index] = (rand() % 6) + 1;
     }
 }
 void shape()
@@ -96,6 +96,20 @@ void shape()
         map[head+3] = 'x';
         map[last+3] = ' ';
         if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = 2;
+    }
+    if(p[counter] == 5)
+    {
+        map[head-side] = 'x';
+        map[last-side] = ' ';
+    }
+    if(p[counter] == 6)
+    {
+        map[head-side] = 'x';
+        map[last-side] = ' ';
+        map[head+1] = 'x';
+        map[head-side+1] = 'x';
+        map[last-side+1] = ' ';
+        if (map[head+side+1] == 'x') head = 2;
     }
     if (map[head+side] == 'x') head = 2;
     if (head>= area-side && head <= area) head = 2;
