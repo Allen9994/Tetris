@@ -21,10 +21,12 @@ using namespace std;
 short score = 0;
 short points = 0;
 short i,j;
+short block = 0;
 bool flag = false;
 short temp = 0;
 char wall[] = {':','|'};
 const short side = 10;
+short num,k;
 const short area = side * side;
 short speed = 1000, level = 2, pace = 1, head = 22;
 char value = 'q';
@@ -47,55 +49,36 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
-void deletion()
+void demolish()
 {
-    int side = 2;
-    int i;
-    short num = 0;
-    bool flag = false;
-    int map[] = {0,1,0,1,0,0,1,1,1,0,0,0,0,1,0,0};
-    int area = sizeof(map)/sizeof(int);
     int j = area-1;
     while(j>=side)
     {
-        if(map[j] == 1) 
+        if(map[j] == ' ') 
         {
+            block = 0;
             j = (j/side)*side;
         }
-        else if(j%side == 0)
+        else if(map[k] == 'x')
         {
-            i = j-1;
-            num++;
-            while(i>0)
+            block++;
+            if(block == side)
             {
-                map[i+side] = map[i];
-                i--;
+                block = 0;
+                k = j-1;
+                while(k>=0)
+                {
+                    map[k-side] = map[k];
+                    k--;
+                }
             }
         }
         j--;
     }
-    for(i=0;i<num*side;i++)
+    for(k=0;k<num*side;k++)
     {
-        map[i] = 0;
+        map[k] = ' ';
     }
-    for(i=0;i<area;i++)
-    {
-        cout<<map[i]<<" ";
-    }
-}
-void demolish()
-{
-    j = area-1;
-    while(j > 0)
-    {
-        if (j%10 != 0 and map[j] != ' ') flag = true;
-        else j = (j/10)*10 - 1;
-        if (flag == true)
-        {
-            map[j] = map[j+side];
-        }
-        j--;
-    }flag = false;
 }
 void convert()
 {
