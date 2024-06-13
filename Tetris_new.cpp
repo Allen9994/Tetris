@@ -47,6 +47,42 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
+void deletion()
+{
+    int side = 2;
+    int i;
+    short num = 0;
+    bool flag = false;
+    int map[] = {0,1,0,1,0,0,1,1,1,0,0,0,0,1,0,0};
+    int area = sizeof(map)/sizeof(int);
+    int j = area-1;
+    while(j>=side)
+    {
+        if(map[j] == 1) 
+        {
+            j = (j/side)*side;
+        }
+        else if(j%side == 0)
+        {
+            i = j-1;
+            num++;
+            while(i>0)
+            {
+                map[i+side] = map[i];
+                i--;
+            }
+        }
+        j--;
+    }
+    for(i=0;i<num*side;i++)
+    {
+        map[i] = 0;
+    }
+    for(i=0;i<area;i++)
+    {
+        cout<<map[i]<<" ";
+    }
+}
 void demolish()
 {
     j = area-1;
