@@ -51,29 +51,31 @@ void speedSelector();
 
 void demolish()
 {
-    int j = area-1;
-    while(j>=side)
+    int p = area-1;
+    while(p>=side)
     {
-        if(map[j] == ' ') 
+        if(map[p] == ' ') 
         {
             block = 0;
-            j = (j/side)*side;
+            p = (p/side)*side;
         }
-        else if(map[k] == 'x')
+        else if(map[p] == 'x')
         {
             block++;
             if(block == side)
             {
                 block = 0;
-                k = j-1;
+                k = p-1;
+                num++;
+                cout<<k;
                 while(k>=0)
                 {
-                    map[k-side] = map[k];
+                    map[k+side] = map[k];
                     k--;
                 }
             }
         }
-        j--;
+        p--;
     }
     for(k=0;k<num*side;k++)
     {
@@ -98,7 +100,7 @@ void randomize()
     srand((unsigned) time(0));
     for (short index = 0; index < area; index++) 
     {
-        p[index] = (rand() % 6) + 1;
+        p[index] = (rand() % 5) + 1;
     }
 }
 void shape()
