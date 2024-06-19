@@ -52,23 +52,22 @@ void speedSelector();
 void destroy()
 {
     int p=area-1;
-    while(p>=area-side)
+    while(p>=side)
     {
-        if(map[p] == 'x')
+        if(map[p] == 'x') block++;
+        if(block == side-1)
         {
-            block++;
+            k = p-1;
+            while(k>=0)
+            {
+                map[k+side] = map[k];
+                k--;
+            }
         }
+        if (p%10 == 0) block = 0;
         p--;
-    }
-    if(block==side-1)
-    {
-        k = area-side-1;
-        while(k>=0)
-        {
-            map[k+side] = map[k];
-            k--;
-        }
-    }
+    }cout<<block<<endl;
+    
     block = 0;
 }
 void convert()
