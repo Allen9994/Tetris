@@ -65,7 +65,6 @@ void destroy()
         if (pos%side == 0) block = 0;
         pos--;
     }
-    
     block = 0;
 }
 void convert()
@@ -86,51 +85,40 @@ void randomize()
     srand((unsigned) time(0));
     for (short index = 0; index < area; index++) 
     {
-        p[index] = (rand() % 5) + 1;
+        p[index] = (rand() % 6) + 1;
     }
 }
 void shape()
 {
-    map[head] = 'x';
     map[last] = ' ';
+    map[head] = 'x';
     if(p[counter] == 2)
     {
-        map[head+1] = 'x';
         map[last+1] = ' ';
+        map[head+1] = 'x';
         if (map[head+side+1] == 'x') head = 2;
     }
     if(p[counter] == 3)
     {
-        map[head+1] = 'x';
-        map[last+1] = ' ';
-        map[head-side+1] = 'x';
-        map[last-side+1] = ' ';
-        map[head-side+2] = 'x';
-        map[last-side+2] = ' ';
+        map[last+1] = map[last-side+1] = map[last-side+2] = ' ';
+        map[head+1] = map[head-side+1] = map[head-side+2] = 'x';
         if (map[head+side+1] == 'x' || map[head+2] == 'x') head = 2;
     }
     if(p[counter] == 4)
     {
-        map[head+1] = 'x';
-        map[last+1] = ' ';
-        map[head+2] = 'x';
-        map[last+2] = ' ';
-        map[head+3] = 'x';
-        map[last+3] = ' ';
+        map[last+1] = map[last+2] = map[last+3] = ' ';
+        map[head+1] = map[head+2] = map[head+3] = 'x';
         if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = 2;
     }
     if(p[counter] == 5)
     {
-        map[head-side] = 'x';
         map[last-side] = ' ';
+        map[head-side] = 'x';
     }
     if(p[counter] == 6)
     {
-        map[head-side] = 'x';
-        map[last-side] = ' ';
-        map[head+1] = 'x';
-        map[head-side+1] = 'x';
-        map[last-side+1] = ' ';
+        map[last-side] = map[last+1] = map[last-side+1] = ' ';
+        map[head-side] = map[head+1] = map[head-side+1] = 'x';
         if (map[head+side+1] == 'x') head = 2;
     }
     if (map[head+side] == 'x') head = 2;
