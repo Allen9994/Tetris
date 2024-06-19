@@ -20,18 +20,14 @@ using namespace std;
 
 short score = 0;
 short points = 0;
-short i,j;
+short i,j,pos;
 short block = 0;
-bool flag = false;
-short temp = 0;
-char wall[] = {':','|'};
-const short side = 10;
+const short side = 12;
 short num,k;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = 22;
+short speed = 1000, level = 2, pace = 1, head = (side*2)+(side/5);
 char value = 'q';
 short p[area-1] = {0};
-vector<int> trail(1, 0); 
 string map(area,' ');
 short highscore = 0;
 short last = 0;
@@ -51,22 +47,23 @@ void speedSelector();
 
 void destroy()
 {
-    int p=area-1;
-    while(p>=side)
+    pos=area-1;
+    while(pos >= side)
     {
-        if(map[p] == 'x') block++;
+        if(map[pos] == 'x') block++;
         if(block == side-1)
         {
-            k = p-1;
+            score++;
+            k = pos-1;
             while(k>=0)
             {
                 map[k+side] = map[k];
                 k--;
             }
-            p += side;
+            pos += side;
         }
-        if (p%10 == 0) block = 0;
-        p--;
+        if (pos%side == 0) block = 0;
+        pos--;
     }
     
     block = 0;
@@ -177,9 +174,8 @@ void control(char value) //Converts user input to the direction snake must move 
 void process()   //Brain of the program. Entire game operation happens here. 
 {
     system("clear");
-    if (map[head+side] == 'x' && head <= side) gameToggle(side,false);
+    if (map[head+side] == 'x' && head <= side) gameToggle(score,false);
     head+=side;
-    cout<<head<<endl;
     value = 'q';
     shape();
     if (head == 2) {
