@@ -49,38 +49,27 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
-void demolish()
+void destroy()
 {
-    int p = area-1;
-    while(p>=side)
+    int p=area-1;
+    while(p>=area-side)
     {
-        if(map[p] == ' ') 
-        {
-            block = 0;
-            p = (p/side)*side;
-        }
-        else if(map[p] == 'x')
+        if(map[p] == 'x')
         {
             block++;
-            if(block == side)
-            {
-                block = 0;
-                k = p-1;
-                num++;
-                cout<<k;
-                while(k>=0)
-                {
-                    map[k+side] = map[k];
-                    k--;
-                }
-            }
         }
         p--;
     }
-    for(k=0;k<num*side;k++)
+    if(block==side-1)
     {
-        map[k] = ' ';
+        k = area-side-1;
+        while(k>=0)
+        {
+            map[k+side] = map[k];
+            k--;
+        }
     }
+    block = 0;
 }
 void convert()
 {
@@ -194,7 +183,7 @@ void process()   //Brain of the program. Entire game operation happens here.
     value = 'q';
     shape();
     if (head == 2) {
-        demolish();
+        destroy();
         counter++;
         convert();
     }
