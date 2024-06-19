@@ -63,10 +63,11 @@ void destroy()
                 map[k+side] = map[k];
                 k--;
             }
+            p += side;
         }
         if (p%10 == 0) block = 0;
         p--;
-    }cout<<block<<endl;
+    }
     
     block = 0;
 }
