@@ -226,7 +226,7 @@ void mainMenu()   //Main Menu
     if(choice == '3')
     {
         system("clear");
-        cout<<"Control the Snake Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
+        cout<<"Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
         cin>>pace;
         cout<<"Control the Game Difficulty level. PRESS\n1 : LEVEL 1\n2 : LEVEL 2\n";
         cin>>level;
@@ -240,7 +240,7 @@ void fileManage(string data, char option)
 {
     if(option == 'i')
     {
-        ifstream fin("snakes_data.txt"); 
+        ifstream fin("tetris_data.txt"); 
         if(!fin) cout<<"Welcome to the game!"; 
         else
         {
@@ -258,13 +258,13 @@ void fileManage(string data, char option)
         fin.close();
     }
     else if(option == 's') {
-        ofstream fout("snakes_data.txt",ios::app);
+        ofstream fout("tetris_data.txt",ios::app);
         fout<<endl<<data;
         fout.close();
     }
     else if(option == 'o')
     {
-        ofstream fout("snakes_data.txt", ios::app);
+        ofstream fout("tetris_data.txt", ios::app);
         if(stoi(data) > highscore) 
         {
             highscore = stoi(data);
