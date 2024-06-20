@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
+#include <vector>
 #include <mutex>
 #include <condition_variable>
 #include <stdlib.h>
@@ -20,18 +21,23 @@ using namespace std;
 short score = 0;
 short points = 0;
 short i,j,pos;
+short m = 0;
+bool plag = false;
 short block = 0;
-const short side = 12;
+const short side = 10;
 short num,k;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = (side*2)+(side/5);
+short speed = 1000, level = 2, pace = 1, head = (side/5);
 char value = 'q';
 short p[area-1] = {0};
 string map(area,' ');
 short highscore = 0;
 short last = 0;
+vector <short>u;
+vector <short>v;
 short length = 0;
 short counter = 2;
+
 string uline(side+1,'_');
 string bline(side+1,'"');
 
@@ -68,21 +74,25 @@ void destroy()
 }
 void convert()
 {
+    v.clear();
     switch (p[counter])
     {
-        case 1:length = 1;break;
-        case 2:length = 2;break;
-        case 3:length = 3;break;
-        case 4:length = 4;break;
-        case 5:length = 1;break;
-        case 6:length = 2;break;
-        case 7:length = 2;break;
+        case 1:v = {0};         length=1;break;
+        case 2:v = {1};         length=2;break;
+        case 3:v = {1,-side+2}; length=3;break;
+        case 4:v = {3};         length=4;break;
+        case 5:v = {0,side};    length=1;break;
+        case 6:v = {1,-side+1}; length=2;break;
+        case 7:v = {1};         length=2;break;
+        case 8:v = {0,-side};   length=1;break;
+        case 9:v = {-side+1};   length=2;break;
+        case 10:v = {-side};    length=1;break;
     }
 }
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 6) + 1;
+    for (short index = 0; index < area; index++) p[index] = (rand() % 10) + 1;
 }
 void shape()
 {
@@ -117,6 +127,30 @@ void shape()
         map[head-side] = map[head+1] = map[head-side+1] = 'x';
         if (map[head+side+1] == 'x') head = 2;
     }
+    if(p[counter] == 7)
+    {
+        map[last-side] = map[last+1] = ' ';
+        map[head-side] = map[head+1] = 'x';
+        if (map[head+side+1] == 'x') head = 2;
+    }
+    if(p[counter] == 8)
+    {
+        map[last-side] = map[last-1] = ' ';
+        map[head-side] = map[head-1] = 'x';
+        if (map[head+side-1] == 'x') head = 2;
+    }
+    if(p[counter] == 9)
+    {
+        map[last-side] = map[last-side+1] = ' ';
+        map[head-side] = map[head-side+1] = 'x';
+        if (map[head+1] == 'x') head = 2;
+    }
+    if(p[counter] == 10)
+    {
+        map[last-side] = map[last-side-1] = ' ';
+        map[head-side] = map[head-side-1] = 'x';
+        if (map[head-1] == 'x') head = 2;
+    }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = 2;
 }
 void read_value() //inputting value from user
@@ -149,7 +183,20 @@ void take_input() //function to accept the value parallelly while game is procee
 void control(char value) //Converts user input to the direction snake must move and stores all the movements into the array
 {
     last = head;
-    if (value == 'd' && map[head+length+1] != 'x' && head%side != side-length-1) head++;
+    convert();
+    if (value == 'd')
+    {
+        m = 0;plag = false;
+        cout<<head<<' ';
+        while(m < v.size())
+        {
+            cout<<head+v[m]+2<<' ';
+            if(map[head+side+v[m]+2] == 'x' || head%side == side-length-1) plag = true;
+            m++;
+        }
+        if(!plag) head++;
+        plag = false;
+    }
     if (value == 'a' && map[head-1] != 'x' && head%side != 0) head--;
     process();
 }
