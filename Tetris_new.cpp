@@ -54,7 +54,7 @@ void speedSelector();
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 14) + 1;
+    for (short index = 0; index < area; index++) p[index] = (rand() % 16) + 1;
     figure = p[counter];
 }
 void destroy()
@@ -93,11 +93,14 @@ void convert()
         case 6:v = {1,-side+1};             u = {1,-side-1};        block_length=2;block_height=1;block_width=0;break;
         case 7:v = {1};                     u = {1,-side-1};        block_length=2;block_height=1;block_width=0;break;
         case 8:v = {0,-side};               u = {0,-side};          block_length=1;block_height=1;block_width=1;break;
-        case 9:v = {-side+1};               u = {1,-side-1};        block_length=2;block_height=1;block_width=0;break;
-        case 10:v= {-side};                 u = {1,-side-2};        block_length=1;block_height=1;block_width=1;break;
+        case 9:v = {0,-side+1};             u = {1,-side-1};        block_length=2;block_height=1;block_width=0;break;
+        case 10:v= {0,-side};               u = {1,-side-2};        block_length=1;block_height=1;block_width=1;break;
         case 11:v= {0,-side+1,(-2*side)+1}; u = {1,-side-1,-2*side};block_length=2;block_height=2;block_width=0;break;
         case 12:v= {0,-side-1,(-2*side)-1}; u = {1,-side-2,-2*side-2};block_length=2;block_height=2;block_width=1;break;
         case 13:v= {0};                     u = {0,-side-3};        block_length=1;block_height=1;block_width=2;break;  
+        case 14:v= {0,side,2*side,3*side};  u = {1,-side-1,-2*side-1,-3*side-1};block_length=1;block_height=3;block_width=0;break;
+        case 15:v= {1,side};                u = {0,-side};          block_length=2;block_height=1;block_width=1;break;
+        case 16:v= {0,-side+1};             u = {1,-side-2};        block_length=2;block_height=1;block_width=1;break;
     }
 }
 void shape()
@@ -180,6 +183,18 @@ void shape()
         map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';
         map[head-side] = map[head-(2*side)]= map[head-(3*side)] = 'x';
     }
+    if(figure == 15)
+    {
+        map[last-1] = map[last+1] = map[last-side] = ' ';
+        map[head-1] = map[head+1] = map[head-side] = 'x';
+        if (map[head+side+1] == 'x'|| map[head+side-1]) head = side/4;
+    }
+    if(figure == 15)
+    {
+        map[last-side] = map[last-side+1] = map[last-side-1] = ' ';
+        map[head-side] = map[head-side+1] = map[head-side-1] = 'x';
+        if (map[head+1] == 'x'|| map[head-1]) head = side/4;
+    }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/4;
 }
 void change()
@@ -198,6 +213,7 @@ void change()
         case 12:figure = 13;map[last-side] = map[last-(2*side)-1] = ' '; head++;    break;
         case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' ';head--;break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';break;
+        
     }
 }
 void read_value() //inputting value from user
@@ -251,7 +267,6 @@ void control(char value) //Converts user input to the direction snake must move 
             if(map[head+side+u[m]-2] == 'x' || head%side == block_width) plag = true;
             m++;
         }
-        cout<<plag;
         if(!plag) head--;
         plag = false;
     }
