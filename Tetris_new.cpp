@@ -26,6 +26,7 @@ bool plag = false;
 short block = 0;
 const short side = 14;
 short num,k;
+short figure = 0;
 const short area = side * side;
 short speed = 1000, level = 2, pace = 1, head = side/4;
 char value = 'q';
@@ -50,8 +51,14 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
+void randomize()
+{
+    srand((unsigned) time(0));
+    for (short index = 0; index < area; index++) p[index] = (rand() % 10) + 1;
+}
 void destroy()
 {
+    figure = p[counter];
     pos = area-1;
     while(pos >= side)
     {
@@ -75,7 +82,7 @@ void destroy()
 void convert()
 {
     v.clear();u.clear();
-    switch (p[counter])
+    switch (figure)
     {
         case 1:v = {0};         u = {1};            block_length=1;block_height=0;break;
         case 2:v = {1};         u = {1};            block_length=2;block_height=1;break;
@@ -89,69 +96,76 @@ void convert()
         case 10:v = {-side};    u = {1,-side-2};    block_length=1;block_height=1;break;
     }
 }
-void randomize()
-{
-    srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 10) + 1;
-}
 void shape()
 {
     map[last] = ' ';
     map[head] = 'x';
-    if(p[counter] == 2)
+    if(figure == 2)
     {
         map[last+1] = ' ';
         map[head+1] = 'x';
         if (map[head+side+1] == 'x') head = side/4;
     }
-    if(p[counter] == 3)
+    if(figure == 3)
     {
         map[last+1] = map[last-side+1] = map[last-side+2] = ' ';
         map[head+1] = map[head-side+1] = map[head-side+2] = 'x';
         if (map[head+side+1] == 'x' || map[head+2] == 'x') head = side/4;
     }
-    if(p[counter] == 4)
+    if(figure == 4)
     {
         map[last+1] = map[last+2] = map[last+3] = ' ';
         map[head+1] = map[head+2] = map[head+3] = 'x';
         if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = side/4;
     }
-    if(p[counter] == 5)
+    if(figure == 5)
     {
         map[last-side] = ' ';
         map[head-side] = 'x';
     }
-    if(p[counter] == 6)
+    if(figure == 6)
     {
         map[last-side] = map[last+1] = map[last-side+1] = ' ';
         map[head-side] = map[head+1] = map[head-side+1] = 'x';
         if (map[head+side+1] == 'x') head = side/4;
     }
-    if(p[counter] == 7)
+    if(figure == 7)
     {
         map[last-side] = map[last+1] = ' ';
         map[head-side] = map[head+1] = 'x';
         if (map[head+side+1] == 'x') head = side/4;
     }
-    if(p[counter] == 8)
+    if(figure == 8)
     {
         map[last-side] = map[last-1] = ' ';
         map[head-side] = map[head-1] = 'x';
         if (map[head+side-1] == 'x') head = side/4;
     }
-    if(p[counter] == 9)
+    if(figure == 9)
     {
         map[last-side] = map[last-side+1] = ' ';
         map[head-side] = map[head-side+1] = 'x';
         if (map[head+1] == 'x') head = side/4;
     }
-    if(p[counter] == 10)
+    if(figure == 10)
     {
         map[last-side] = map[last-side-1] = ' ';
         map[head-side] = map[head-side-1] = 'x';
         if (map[head-1] == 'x') head = side/4;
     }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/4;
+}
+void change()
+{
+    switch(figure)
+    {
+        case 2:figure = 5;  map[last+1] = ' ';      break;
+        case 5:figure = 2;  map[last-side] = ' ';   break;
+        case 7:figure = 8;  map[last+1] = ' ';      break;
+        case 8:figure = 9;  map[last-1] = ' ';      break;
+        case 9:figure = 10; map[last-side+1] = ' '; break;
+        case 10:figure = 7; map[last-side-1] = ' '; break;
+    }
 }
 void read_value() //inputting value from user
 {   
@@ -165,7 +179,8 @@ void read_value() //inputting value from user
     switch(c)
     {
         case 'd': 
-        case 'a': value = c;
+        case 'a': 
+        case 'w':value = c;
     }
     if (p[counter]== 6 && (value == 'a' || value == 'd') && (map[head+side] != 'x' || map[head+side+1] != 'x')) map[last+1] = ' ';
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
@@ -207,7 +222,7 @@ void control(char value) //Converts user input to the direction snake must move 
         if(!plag) head--;
         plag = false;
     }
-    if (value == 's') head += side;
+    if(value == 'w') change();
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
