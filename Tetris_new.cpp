@@ -54,7 +54,7 @@ void speedSelector();
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 13) + 1;
+    for (short index = 0; index < area; index++) p[index] = (rand() % 14) + 1;
     figure = p[counter];
 }
 void destroy()
@@ -175,6 +175,11 @@ void shape()
         map[head-1] = map[head-side-1] = map[head-side-2] = 'x';
         if (map[head+side-1] == 'x' || map[head-2] == 'x') head = side/4;
     }
+    if(figure == 14)
+    {
+        map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';
+        map[head-side] = map[head-(2*side)]= map[head-(3*side)] = 'x';
+    }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/4;
 }
 void change()
@@ -183,14 +188,16 @@ void change()
     {
         case 2: figure = 5; map[last+1] = ' ';                                      break;
         case 3: figure = 11;map[last+1] = map[last-side+2] = ' ';                   break;
+        case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' ';          break;
         case 5: figure = 2; map[last-side] = ' ';                                   break;
-        case 7: figure = 8; map[last+1] = ' ';                                      break;
-        case 8: figure = 9; map[last-1] = ' ';                                      break;
-        case 9: figure = 10;map[last-side+1] = ' ';                                 break;
-        case 10:figure = 7; map[last-side-1] = ' ';                                 break;
-        case 11:figure = 12;map[last-side+1] = map[last-(2*side)+1] = ' ';          break;
-        case 12:figure = 13;map[last-side] = map[last-(2*side)-1] = ' ';            break;
-        case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' ';break;
+        case 7: figure = 8; map[last+1] = ' '; head++;                              break;
+        case 8: figure = 9; map[last-1] = ' '; head--;                              break;
+        case 9: figure = 10;map[last-side+1] = ' '; head++;                         break;
+        case 10:figure = 7; map[last-side-1] = ' '; head--;                         break;
+        case 11:figure = 12;map[last-side+1] = map[last-(2*side)+1] = ' '; head++;  break;
+        case 12:figure = 13;map[last-side] = map[last-(2*side)-1] = ' '; head++;    break;
+        case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' ';head--;break;
+        case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';break;
     }
 }
 void read_value() //inputting value from user
