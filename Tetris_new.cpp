@@ -24,10 +24,10 @@ short i,j,pos;
 short m = 0;
 bool plag = false;
 short block = 0;
-const short side = 10;
+const short side = 14;
 short num,k;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = (side/5);
+short speed = 1000, level = 2, pace = 1, head = side/4;
 char value = 'q';
 short p[area-1] = {0};
 string map(area,' ');
@@ -74,19 +74,19 @@ void destroy()
 }
 void convert()
 {
-    v.clear();
+    v.clear();u.clear();
     switch (p[counter])
     {
-        case 1:v = {0};         length=1;break;
-        case 2:v = {1};         length=2;break;
-        case 3:v = {1,-side+2}; length=3;break;
-        case 4:v = {3};         length=4;break;
-        case 5:v = {0,side};    length=1;break;
-        case 6:v = {1,-side+1}; length=2;break;
-        case 7:v = {1};         length=2;break;
-        case 8:v = {0,-side};   length=1;break;
-        case 9:v = {-side+1};   length=2;break;
-        case 10:v = {-side};    length=1;break;
+        case 1:v = {0};         u = {1};            length=1;break;
+        case 2:v = {1};         u = {1};            length=2;break;
+        case 3:v = {1,-side+2}; u = {1,-side};      length=3;break;
+        case 4:v = {3};         u = {1};            length=4;break;
+        case 5:v = {0,side};    u = {1,-side-1};    length=1;break;
+        case 6:v = {1,-side+1}; u = {1,-side-1};    length=2;break;
+        case 7:v = {1};         u = {1,-side-1};    length=2;break;
+        case 8:v = {0,-side};   u = {0,-side-1};    length=1;break;
+        case 9:v = {-side+1};   u = {1};            length=2;break;
+        case 10:v = {-side};    u = {1,-side-2};    length=1;break;
     }
 }
 void randomize()
@@ -102,19 +102,19 @@ void shape()
     {
         map[last+1] = ' ';
         map[head+1] = 'x';
-        if (map[head+side+1] == 'x') head = 2;
+        if (map[head+side+1] == 'x') head = side/4;
     }
     if(p[counter] == 3)
     {
         map[last+1] = map[last-side+1] = map[last-side+2] = ' ';
         map[head+1] = map[head-side+1] = map[head-side+2] = 'x';
-        if (map[head+side+1] == 'x' || map[head+2] == 'x') head = 2;
+        if (map[head+side+1] == 'x' || map[head+2] == 'x') head = side/4;
     }
     if(p[counter] == 4)
     {
         map[last+1] = map[last+2] = map[last+3] = ' ';
         map[head+1] = map[head+2] = map[head+3] = 'x';
-        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = 2;
+        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = side/4;
     }
     if(p[counter] == 5)
     {
@@ -125,33 +125,33 @@ void shape()
     {
         map[last-side] = map[last+1] = map[last-side+1] = ' ';
         map[head-side] = map[head+1] = map[head-side+1] = 'x';
-        if (map[head+side+1] == 'x') head = 2;
+        if (map[head+side+1] == 'x') head = side/4;
     }
     if(p[counter] == 7)
     {
         map[last-side] = map[last+1] = ' ';
         map[head-side] = map[head+1] = 'x';
-        if (map[head+side+1] == 'x') head = 2;
+        if (map[head+side+1] == 'x') head = side/4;
     }
     if(p[counter] == 8)
     {
         map[last-side] = map[last-1] = ' ';
         map[head-side] = map[head-1] = 'x';
-        if (map[head+side-1] == 'x') head = 2;
+        if (map[head+side-1] == 'x') head = side/4;
     }
     if(p[counter] == 9)
     {
         map[last-side] = map[last-side+1] = ' ';
         map[head-side] = map[head-side+1] = 'x';
-        if (map[head+1] == 'x') head = 2;
+        if (map[head+1] == 'x') head = side/4;
     }
     if(p[counter] == 10)
     {
         map[last-side] = map[last-side-1] = ' ';
         map[head-side] = map[head-side-1] = 'x';
-        if (map[head-1] == 'x') head = 2;
+        if (map[head-1] == 'x') head = side/4;
     }
-    if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = 2;
+    if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/4;
 }
 void read_value() //inputting value from user
 {   
@@ -187,17 +187,26 @@ void control(char value) //Converts user input to the direction snake must move 
     if (value == 'd')
     {
         m = 0;plag = false;
-        cout<<head<<' ';
         while(m < v.size())
         {
-            cout<<head+v[m]+2<<' ';
             if(map[head+side+v[m]+2] == 'x' || head%side == side-length-1) plag = true;
             m++;
         }
         if(!plag) head++;
         plag = false;
     }
-    if (value == 'a' && map[head-1] != 'x' && head%side != 0) head--;
+    if (value == 'a')
+    {
+        m = 0;plag = false;
+        while(m < u.size())
+        {
+            if(map[head+side+u[m]-2] == 'x' || head%side == 0) plag = true;
+            m++;
+        }
+        cout<<plag;
+        if(!plag) head--;
+        plag = false;
+    }
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
@@ -207,7 +216,7 @@ void process()   //Brain of the program. Entire game operation happens here.
     head += side;
     value = 'q';
     shape();
-    if (head == 2) {
+    if (head == side/4) {
         destroy();
         counter++;
         convert();
