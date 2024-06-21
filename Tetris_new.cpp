@@ -35,7 +35,7 @@ short highscore = 0;
 short last = 0;
 vector <short>u;
 vector <short>v;
-short length = 0;
+short block_length = 0,block_height = 0;
 short counter = 2;
 
 string uline(side+1,'_');
@@ -77,16 +77,16 @@ void convert()
     v.clear();u.clear();
     switch (p[counter])
     {
-        case 1:v = {0};         u = {1};            length=1;break;
-        case 2:v = {1};         u = {1};            length=2;break;
-        case 3:v = {1,-side+2}; u = {1,-side};      length=3;break;
-        case 4:v = {3};         u = {1};            length=4;break;
-        case 5:v = {0,side};    u = {1,-side-1};    length=1;break;
-        case 6:v = {1,-side+1}; u = {1,-side-1};    length=2;break;
-        case 7:v = {1};         u = {1,-side-1};    length=2;break;
-        case 8:v = {0,-side};   u = {0,-side-1};    length=1;break;
-        case 9:v = {-side+1};   u = {1};            length=2;break;
-        case 10:v = {-side};    u = {1,-side-2};    length=1;break;
+        case 1:v = {0};         u = {1};            block_length=1;block_height=0;break;
+        case 2:v = {1};         u = {1};            block_length=2;block_height=1;break;
+        case 3:v = {1,-side+2}; u = {1,-side};      block_length=3;block_height=1;break;
+        case 4:v = {3};         u = {1};            block_length=4;block_height=0;break;
+        case 5:v = {0,side};    u = {1,-side-1};    block_length=1;block_height=2;break;
+        case 6:v = {1,-side+1}; u = {1,-side-1};    block_length=2;block_height=1;break;
+        case 7:v = {1};         u = {1,-side-1};    block_length=2;block_height=1;break;
+        case 8:v = {0,-side};   u = {0,-side-1};    block_length=1;block_height=1;break;
+        case 9:v = {-side+1};   u = {1};            block_length=2;block_height=1;break;
+        case 10:v = {-side};    u = {1,-side-2};    block_length=1;block_height=1;break;
     }
 }
 void randomize()
@@ -189,7 +189,7 @@ void control(char value) //Converts user input to the direction snake must move 
         m = 0;plag = false;
         while(m < v.size())
         {
-            if(map[head+side+v[m]+2] == 'x' || head%side == side-length-1) plag = true;
+            if(map[head+side+v[m]+2] == 'x' || head%side == side-block_length-1) plag = true;
             m++;
         }
         if(!plag) head++;
@@ -207,12 +207,13 @@ void control(char value) //Converts user input to the direction snake must move 
         if(!plag) head--;
         plag = false;
     }
+    if (value == 's') head += side;
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
 {
     system("clear");
-    if (map[head+side] == 'x' && head <= side) gameToggle(score,false);
+    if (map[head+side] == 'x' && head-(block_height)*side <= side) gameToggle(score,false);
     head += side;
     value = 'q';
     shape();
