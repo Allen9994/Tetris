@@ -43,7 +43,7 @@ string uline(side+1,'_');
 string bline(side+1,'"');
 
 condition_variable cv;
-void control(char);
+void control();
 void display();
 void gameToggle(short,bool);
 void process();
@@ -54,7 +54,7 @@ void speedSelector();
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 18) + 1;
+    for (short index = 0; index < area; index++) p[index] = (rand() % 19) + 1;
     figure = p[counter];
 }
 void destroy()
@@ -91,7 +91,7 @@ void convert()
         case 4:v = {3};                     u = {1};                            block_length=4;block_height=0;block_width=0;break;
         case 5:v = {0,-side};               u = {1,-side-1};                    block_length=1;block_height=1;block_width=0;break;
         case 6:v = {1,-side+1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
-        case 7:v = {1};                     u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
+        case 7:v = {1,-side-1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
         case 8:v = {0,-side};               u = {0,-side};                      block_length=1;block_height=1;block_width=1;break;
         case 9:v = {0,-side+1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
         case 10:v= {0,-side};               u = {1,-side-2};                    block_length=1;block_height=1;block_width=1;break;
@@ -103,6 +103,7 @@ void convert()
         case 16:v= {0,-side+1};             u = {1,-side-2};                    block_length=2;block_height=1;block_width=1;break;
         case 17:v= {0,-side+1,(2*side)};    u = {1,-side-1,(2*side)-1};         block_length=2;block_height=2;block_width=0;break;
         case 18:v= {0,-side,(2*side)};      u = {1,-side-2,(2*side)-1};         block_length=1;block_height=2;block_width=1;break;
+        case 19:v= {0,-side+1,(2*side)};    u = {1,-side-2,(2*side)-1};         block_length=2;block_height=2;block_width=1;break;
     }
 }
 void shape()
@@ -209,6 +210,12 @@ void shape()
         map[head-side] = map[head-(2*side)] = map[head-side-1] = 'x';
         if (map[head-1] == 'x') head = side/2;
     }
+    if(figure == 19)
+    {
+        map[last-side] = map[last-(2*side)] = map[last-side-1] = map[last-side+1] = ' ';
+        map[head-side] = map[head-(2*side)] = map[head-side-1] = map[head-side+1] = 'x';
+        if (map[head-1] == 'x' || map[head+1] == 'x') head = side/2;
+    }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/2;
 }
 void change()
@@ -247,8 +254,9 @@ void read_value() //inputting value from user
     {
         case 'd': 
         case 'a': 
-        case 'w':value = c;
-    }
+        case 'w':
+        case 't':value = c;
+    }cout<<value;
     if (p[counter]== 6 && (value == 'a' || value == 'd') && (map[head+side] != 'x' || map[head+side+1] != 'x')) map[last+1] = ' ';
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
     cv.notify_one();
@@ -258,11 +266,11 @@ void take_input() //function to accept the value parallelly while game is procee
     thread th(read_value);
     mutex mtx;
     unique_lock<mutex> lck(mtx);
-    while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) control(value);
+    while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) control();
     th.join();
-    control(value);
+    control();
 }
-void control(char value) //Converts user input to the direction snake must move and stores all the movements into the array
+void control() //Converts user input to the direction snake must move and stores all the movements into the array
 {
     last = head;
     convert();
@@ -271,11 +279,10 @@ void control(char value) //Converts user input to the direction snake must move 
         m = 0;plag = false;
         while(m < v.size())
         {
-            if(map[head+side+v[m]+2] == 'x' || head%side == side-block_length-1) plag = true;
+            if(map[head+side+v[m]+1] == 'x' || head%side == side-block_length-1) plag = true;
             m++;
         }
         if(!plag) head++;
-        plag = false;
     }
     if (value == 'a')
     {
@@ -286,9 +293,10 @@ void control(char value) //Converts user input to the direction snake must move 
             m++;
         }
         if(!plag) head--;
-        plag = false;
     }
+    plag = false;
     if(value == 'w') change();
+    if(value == 't') {system("clear");gameToggle(score,false);}
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
@@ -334,7 +342,8 @@ void gameToggle(short score, bool toggle)
             fileManage(to_string(pace) + to_string(level),'s');
             fileManage(to_string(score),'o');
             cout<<"Game Over!\nScore:"<<score;
-            exit(0);
+            cin>>i;
+            abort();
         }
     }while(toggle);
 }
@@ -364,7 +373,7 @@ void mainMenu()   //Main Menu
         speedSelector();
         gameToggle(0,true);
     }
-    else exit(0);
+    else abort();
 }
 void fileManage(string data, char option)
 {
