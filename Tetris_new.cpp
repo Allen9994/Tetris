@@ -56,7 +56,7 @@ void randomize()
     srand((unsigned) time(0));
     for (short index = 0; index < area; index++) p[index] = (rand() % 19) + 1;
     figure = p[counter];
-    figure = 19;
+    figure = 15;
 }
 void destroy()
 {
@@ -92,15 +92,15 @@ void convert()
         case 4:v = {3};                     u = {1};                            block_length=4;block_height=0;block_width=0;break;
         case 5:v = {0,-side};               u = {1,-side-1};                    block_length=1;block_height=1;block_width=0;break;
         case 6:v = {1,-side+1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
-        case 7:v = {1,-side-1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
+        case 7:v = {1,-side+1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
         case 8:v = {0,-side};               u = {0,-side};                      block_length=1;block_height=1;block_width=1;break;
         case 9:v = {0,-side+1};             u = {1,-side-1};                    block_length=2;block_height=1;block_width=0;break;
         case 10:v= {0,-side};               u = {1,-side-2};                    block_length=1;block_height=1;block_width=1;break;
         case 11:v= {0,-side+1,(-2*side)+1}; u = {1,-side-1,-2*side};            block_length=2;block_height=2;block_width=0;break;
-        case 12:v= {0,-side-1,(-2*side)-1}; u = {1,-side-2,-2*side-2};          block_length=1;block_height=2;block_width=1;break;
+        case 12:v= {0,-side,(-2*side)};     u = {1,-side-1,-2*side-1};          block_length=1;block_height=2;block_width=1;break;
         case 13:v= {0};                     u = {0,-side-3};                    block_length=1;block_height=1;block_width=2;break;  
         case 14:v= {0,-side,2*-side,3*-side};u = {1,-side-1,-2*side-1,-3*side-1};block_length=1;block_height=3;block_width=0;break;
-        case 15:v= {1,-side};               u = {0,-side};                      block_length=2;block_height=1;block_width=1;break;
+        case 15:v= {1,-side+1};             u = {0,-side};                      block_length=2;block_height=1;block_width=1;break;
         case 16:v= {0,-side+1};             u = {1,-side-2};                    block_length=2;block_height=1;block_width=1;break;
         case 17:v= {0,-side+1,(2*side)};    u = {1,-side-1,(2*side)-1};         block_length=2;block_height=2;block_width=0;break;
         case 18:v= {0,-side,(2*side)};      u = {1,-side-2,(2*side)-1};         block_length=1;block_height=2;block_width=1;break;
