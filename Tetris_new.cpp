@@ -47,7 +47,7 @@ string bline(side+1,'"');
 condition_variable cv;
 void control();
 void display();
-void gameToggle(short,bool);
+void gameToggle(bool);
 void process();
 void mainMenu();
 void fileManage(string,char);
@@ -323,14 +323,14 @@ void control() //Converts user input to the direction block must move
     if (value == 'q') changeShapeLeft();
     if (value == 't') {
         system("clear");
-        gameToggle(score,false);
+        gameToggle(false);
     }
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
 {
     system("clear");
-    if (map[head+side] == 'x' && head-(block_height)*side <= side) gameToggle(score,false);
+    if (map[head+side] == 'x' && head-(block_height)*side <= side) gameToggle(false);
     head += side;
     value = 'm';
     createShape();
@@ -362,7 +362,7 @@ int main()
     randomize();
     mainMenu();
 }
-void gameToggle(short score, bool toggle) 
+void gameToggle(bool toggle) 
 {
     if(toggle) takeInput();
     else
@@ -373,7 +373,7 @@ void gameToggle(short score, bool toggle)
         cin>>i;
         abort();
     }
-    gameToggle(score,true);
+    gameToggle(true);
 }
 void mainMenu()   
 {   
@@ -381,7 +381,7 @@ void mainMenu()
     cout<<"\nCreated by Allen\nPress:\n1 to Play\n2 for Help\n3 for Game Settings\n4 to exit\n";
     cin>>choice;
     system("clear");
-    if(choice == '1') gameToggle(0,true);
+    if(choice == '1') gameToggle(true);
     if(choice == '2')   //Instructions
     {   
         cout<<"CONTROLS\nPRESS\n w TO MOVE UPWARD\n s TO MOVE DOWNWARDS \n d TO MOVE RIGHT \n a TO MOVE LEFT";
@@ -397,7 +397,7 @@ void mainMenu()
         cin>>level;
         level = (level == 1) ? 1 : 2;
         speedSelector();
-        gameToggle(0,true);
+        gameToggle(true);
     }
     else abort();
 }
