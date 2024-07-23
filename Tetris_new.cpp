@@ -18,29 +18,19 @@
 #include <time.h>
 using namespace std;
 
-short score = 0;
-short points = 0;
-short i,j,pos;
-short m = 0;
-bool plag = false;
-short block = 0;
+short i,j,levelCounter,score = 0, figure = 0, levelShift, block = 0;
+short last = 0,highscore = 0, previewFigure = 0, listCounter = 2;
 const short side = 14;
-short num,k;
-short figure = 0;
-const short area = side * side;
 short speed = 1000, level = 2, pace = 1, head = (side-1)/2;
+short block_length = 0, block_height = 0, block_width = 0;
+bool hitWall = false;
+const short area = side * side;
 char value = 'm';
-short p[area-1] = {0};
+short shapeList[area-1] = {0};
 string map(area,' ');
-short highscore = 0;
-short last = 0;
 vector <short>u;
 vector <short>v;
-short previewFigure = 0;
 string preview = "";
-short block_length = 0,block_height = 0,block_width = 0;
-short counter = 2;
-
 string uline(side+1,'_');
 string bline(side+1,'"');
 
@@ -55,55 +45,55 @@ void speedSelector();
 
 void blockPreview()
 {
-    previewFigure = p[counter];
+    previewFigure = shapeList[listCounter];
     switch(previewFigure)
     {
-        case 1: preview = "x\n\n\n";        break;
-        case 2: preview = "xx\n\n\n";       break;
-        case 3: preview = " xx\nxx\n\n";    break;
-        case 4: preview = "xxxx\n\n\n";     break;
-        case 5: preview = "x\nx\n\n";       break;
-        case 6: preview = "xx\nxx\n\n";     break;
-        case 7: preview = "x\nxx\n\n";      break;
-        case 8: preview = " x\nxx\n\n";     break;
-        case 9: preview = "xx\nx\n\n";      break;
-        case 10:preview = "xx\n x\n\n";     break;
-        case 11:preview = " x\nxx\nx\n";    break;
-        case 12:preview = "x\nxx\n x\n";    break;
-        case 13:preview = "xx\n xx\n\n";    break;
-        case 14:preview = " x\n x\n x\n x"; break;
-        case 15:preview = " x \nxxx\n\n";   break; 
-        case 16:preview = "xxx\n x \n\n";   break;
-        case 17:preview = "x\nxx\nx\n";     break;
-        case 18:preview = " x\nxx\n x\n";   break;
-        case 19:preview = " x \nxxx\n x \n";break;
+        case 1: preview = "x\n\n";        break;
+        case 2: preview = "xx\n\n";       break;
+        case 3: preview = " xx\nxx\n";    break;
+        case 4: preview = "xxxx\n\n";     break;
+        case 5: preview = "x\nx\n";       break;
+        case 6: preview = "xx\nxx\n";     break;
+        case 7: preview = "x\nxx\n";      break;
+        case 8: preview = " x\nxx\n";     break;
+        case 9: preview = "xx\nx\n";      break;
+        case 10:preview = "xx\n x\n";     break;
+        case 11:preview = " x\nxx\nx";    break;
+        case 12:preview = "x\nxx\n x";    break;
+        case 13:preview = "xx\n xx\n";    break;
+        case 14:preview = "x\nx\nx\nx";   break;
+        case 15:preview = " x \nxxx\n";   break; 
+        case 16:preview = "xxx\n x \n";   break;
+        case 17:preview = "x\nxx\nx";     break;
+        case 18:preview = " x\nxx\n x";   break;
+        case 19:preview = " x \nxxx\n x ";break;
     }
-    cout<<preview;
+    cout<<preview<<endl;
 }
 void randomize()
 {
     srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) p[index] = (rand() % 19) + 1;
-    figure = p[counter];
+    for (short index = 0; index < area; index++) shapeList[index] = (rand() % 19) + 1;
+    figure = shapeList[listCounter];
 }
 void destroyBlocks()
 {
-    figure = p[counter];
-    pos = area-1;
-    while(pos >= side)
+    figure = shapeList[listCounter];
+    levelCounter = area-1;
+    while(levelCounter >= side)
     {
-        if(map[pos] == 'x') block++;
+        if(map[levelCounter] == 'x') block++;
         if(block == side-1){
             score++;
-            k = pos-1;
-            while(k >= 0){
-                map[k+side] = map[k];
-                k--;
+            levelShift = levelCounter-1;
+            while(levelShift >= 0){
+                map[levelShift+side] = map[levelShift];
+                levelShift--;
             }
-            pos += side;
+            levelCounter += side;
         }
-        if (pos%side == 0) block = 0;
-        pos--;
+        if (levelCounter%side == 0) block = 0;
+        levelCounter--;
     }
     block = 0;
 }
@@ -282,7 +272,6 @@ void readValue() //inputting value from user
  
     char c = getchar();
     if (c == 'd' || c == 'a' || c == 'w' || c == 't' || c == 'q') value = c;
-    if (p[counter]== 6 && (value == 'a' || value == 'd') && (map[head+side] != 'x' || map[head+side+1] != 'x')) map[last+1] = ' ';
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
     cv.notify_one();
 }
@@ -301,24 +290,24 @@ void control() //Converts user input to the direction block must move
     convert();
     if (value == 'd')
     {
-        m = 0;
-        plag = false;
-        while(m < v.size()){
-            if(map[head+side+v[m]+1] == 'x' || head%side == side-block_length-1) plag = true;
-            m++;
+        i = 0;
+        hitWall = false;
+        while(i < v.size()){
+            if(map[head+side+v[i]+1] == 'x' || head%side == side-block_length-1) hitWall = true;
+            i++;
         }
-        if(!plag) head++;
+        if(!hitWall) head++;
     }
     if (value == 'a'){
-        m = 0;
-        plag = false;
-        while(m < u.size()){
-            if(map[head+side+u[m]-2] == 'x' || head%side == block_width) plag = true;
-            m++;
+        i = 0;
+        hitWall = false;
+        while(i < u.size()){
+            if(map[head+side+u[i]-2] == 'x' || head%side == block_width) hitWall = true;
+            i++;
         }
-        if(!plag) head--;
+        if(!hitWall) head--;
     }
-    plag = false;
+    hitWall = false;
     if (value == 'w') changeShapeRight();
     if (value == 'q') changeShapeLeft();
     if (value == 't') {
@@ -336,7 +325,7 @@ void process()   //Brain of the program. Entire game operation happens here.
     createShape();
     if (head == (side-1)/2) {
         destroyBlocks();
-        counter++;
+        listCounter++;
         convert();
     }
     display();
@@ -384,7 +373,7 @@ void mainMenu()
     if(choice == '1') gameToggle(true);
     if(choice == '2')   //Instructions
     {   
-        cout<<"CONTROLS\nPRESS\n w TO MOVE UPWARD\n s TO MOVE DOWNWARDS \n d TO MOVE RIGHT \n a TO MOVE LEFT";
+        cout<<"CONTROLS\nPRESS\n a TO MOVE LEFT\n d TO MOVE RIGHT \n w TO ROTATE RIGHT \n q TO ROTATE LEFT";
         cin>>choice;
         system("clear");
         main();
