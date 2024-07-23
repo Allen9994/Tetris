@@ -36,6 +36,8 @@ short highscore = 0;
 short last = 0;
 vector <short>u;
 vector <short>v;
+short previewFigure = 0;
+string preview = "";
 short block_length = 0,block_height = 0,block_width = 0;
 short counter = 2;
 
@@ -51,6 +53,33 @@ void mainMenu();
 void fileManage(string,char);
 void speedSelector();
 
+void blockPreview()
+{
+    previewFigure = p[counter];
+    switch(previewFigure)
+    {
+        case 1: preview = "x\n\n\n";        break;
+        case 2: preview = "xx\n\n\n";       break;
+        case 3: preview = " xx\nxx\n\n";    break;
+        case 4: preview = "xxxx\n\n\n";     break;
+        case 5: preview = "x\nx\n\n";       break;
+        case 6: preview = "xx\nxx\n\n";     break;
+        case 7: preview = "x\nxx\n\n";      break;
+        case 8: preview = " x\nxx\n\n";     break;
+        case 9: preview = "xx\nx\n\n";      break;
+        case 10:preview = "xx\n x\n\n";     break;
+        case 11:preview = " x\nxx\nx\n";    break;
+        case 12:preview = "x\nxx\n x\n";    break;
+        case 13:preview = "xx\n xx\n\n";    break;
+        case 14:preview = " x\n x\n x\n x"; break;
+        case 15:preview = " x \nxxx\n\n";   break; 
+        case 16:preview = "xxx\n x \n\n";   break;
+        case 17:preview = "x\nxx\nx\n";     break;
+        case 18:preview = " x\nxx\n x\n";   break;
+        case 19:preview = " x \nxxx\n x \n";break;
+    }
+    cout<<preview;
+}
 void randomize()
 {
     srand((unsigned) time(0));
@@ -314,6 +343,7 @@ void process()   //Brain of the program. Entire game operation happens here.
 }
 void display()
 {
+    blockPreview();
     cout<<uline<<endl;
     for (j=0;j<side;j++)  //Designing the 2Dmodel : Borders not made yet
     {   
