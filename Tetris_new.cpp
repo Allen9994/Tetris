@@ -28,8 +28,8 @@ const short side = 14;
 short num,k;
 short figure = 0;
 const short area = side * side;
-short speed = 1000, level = 2, pace = 1, head = side/2;
-char value = 'q';
+short speed = 1000, level = 2, pace = 1, head = (side-1)/2;
+char value = 'm';
 short p[area-1] = {0};
 string map(area,' ');
 short highscore = 0;
@@ -56,21 +56,18 @@ void randomize()
     srand((unsigned) time(0));
     for (short index = 0; index < area; index++) p[index] = (rand() % 19) + 1;
     figure = p[counter];
-    figure = 15;
 }
-void destroy()
+void destroyBlocks()
 {
     figure = p[counter];
     pos = area-1;
     while(pos >= side)
     {
         if(map[pos] == 'x') block++;
-        if(block == side-1)
-        {
+        if(block == side-1){
             score++;
             k = pos-1;
-            while(k >= 0)
-            {
+            while(k >= 0){
                 map[k+side] = map[k];
                 k--;
             }
@@ -83,7 +80,8 @@ void destroy()
 }
 void convert()
 {
-    v.clear();u.clear();
+    v.clear();
+    u.clear();
     switch (figure)
     {
         case 1:v = {0};                     u = {1};                            block_length=1;block_height=0;block_width=0;break;
@@ -107,124 +105,105 @@ void convert()
         case 19:v= {0,-side+1,(2*side)};    u = {1,-side-2,(2*side)-1};         block_length=2;block_height=2;block_width=1;break;
     }
 }
-void shape()
+void createShape()
 {
     map[last] = ' ';
     map[head] = 'x';
-    if(figure == 2)
-    {
+    if(figure == 2){
         map[last+1] = ' ';
         map[head+1] = 'x';
-        if (map[head+side+1] == 'x') head = side/2;
+        if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 3)
-    {
+    if(figure == 3){
         map[last+1] = map[last-side+1] = map[last-side+2] = ' ';
         map[head+1] = map[head-side+1] = map[head-side+2] = 'x';
-        if (map[head+side+1] == 'x' || map[head+2] == 'x') head = side/2;
+        if (map[head+side+1] == 'x' || map[head+2] == 'x') head = (side-1)/2;
     }
-    if(figure == 4)
-    {
+    if(figure == 4){
         map[last+1] = map[last+2] = map[last+3] = ' ';
         map[head+1] = map[head+2] = map[head+3] = 'x';
-        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = side/2;
+        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = (side-1)/2;
     }
-    if(figure == 5)
-    {
+    if(figure == 5){
         map[last-side] = ' ';
         map[head-side] = 'x';
     }
-    if(figure == 6)
-    {
+    if(figure == 6){
         map[last-side] = map[last+1] = map[last-side+1] = ' ';
         map[head-side] = map[head+1] = map[head-side+1] = 'x';
-        if (map[head+side+1] == 'x') head = side/2;
+        if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 7)
-    {
+    if(figure == 7){
         map[last-side] = map[last+1] = ' ';
         map[head-side] = map[head+1] = 'x';
-        if (map[head+side+1] == 'x') head = side/2;
+        if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 8)
-    {
+    if(figure == 8){
         map[last-side] = map[last-1] = ' ';
         map[head-side] = map[head-1] = 'x';
-        if (map[head+side-1] == 'x') head = side/2;
+        if (map[head+side-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 9)
-    {
+    if(figure == 9){
         map[last-side] = map[last-side+1] = ' ';
         map[head-side] = map[head-side+1] = 'x';
-        if (map[head+1] == 'x') head = side/2;
+        if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 10)
-    {
+    if(figure == 10){
         map[last-side] = map[last-side-1] = ' ';
         map[head-side] = map[head-side-1] = 'x';
-        if (map[head-1] == 'x') head = side/2;
+        if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 11)
-    {
+    if(figure == 11){
         map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' ';
         map[head-side] = map[head-side+1] = map[head-(2*side)+1] = 'x';
-        if (map[head+1] == 'x') head = side/2;
+        if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 12)
-    {
+    if(figure == 12){
         map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' ';
         map[head-side] = map[head-side-1] = map[head-(2*side)-1] = 'x';
-        if (map[head-1] == 'x') head = side/2;
+        if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 13)
-    {
+    if(figure == 13){
         map[last-1] = map[last-side-1] = map[last-side-2] = ' ';
         map[head-1] = map[head-side-1] = map[head-side-2] = 'x';
-        if (map[head+side-1] == 'x' || map[head-2] == 'x') head = side/2;
+        if (map[head+side-1] == 'x' || map[head-2] == 'x') head = (side-1)/2;
     }
-    if(figure == 14)
-    {
+    if(figure == 14){
         map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';
         map[head-side] = map[head-(2*side)]= map[head-(3*side)] = 'x';
     }
-    if(figure == 15)
-    {
+    if(figure == 15){
         map[last-1] = map[last+1] = map[last-side] = ' ';
         map[head-1] = map[head+1] = map[head-side] = 'x';
-        if (map[head+side+1] == 'x'|| map[head+side-1] == 'x') head = side/2;
+        if (map[head+side+1] == 'x'|| map[head+side-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 16)
-    {
+    if(figure == 16){
         map[last-side] = map[last-side+1] = map[last-side-1] = ' ';
         map[head-side] = map[head-side+1] = map[head-side-1] = 'x';
-        if (map[head+1] == 'x'|| map[head-1] == 'x') head = side/2;
+        if (map[head+1] == 'x'|| map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 17)
-    {
+    if(figure == 17){
         map[last-side] = map[last-(2*side)] = map[last-side+1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side+1] = 'x';
-        if (map[head+1] == 'x') head = side/2;
+        if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 18)
-    {
+    if(figure == 18){
         map[last-side] = map[last-(2*side)] = map[last-side-1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side-1] = 'x';
-        if (map[head-1] == 'x') head = side/2;
+        if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 19)
-    {
+    if(figure == 19){
         map[last-side] = map[last-(2*side)] = map[last-side-1] = map[last-side+1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side-1] = map[head-side+1] = 'x';
-        if (map[head-1] == 'x' || map[head+1] == 'x') head = side/2;
+        if (map[head-1] == 'x' || map[head+1] == 'x') head = (side-1)/2;
     }
-    if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = side/2;
+    if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = (side-1)/2;
 }
-void change()
+void changeShapeRight()
 {
-    cout<<head;
     switch(figure)
     {
-        case 2: figure = 5; map[last+1] = ' '; break;
+        case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++;break;
         case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head++; if(head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
         case 5: figure = 2; map[last-side] = ' '; if(head%side == side-2) head--; break;
@@ -232,9 +211,9 @@ void change()
         case 8: figure = 7; map[last-1] = ' '; head--; break;
         case 9: figure = 10;map[last-side+1] = ' '; head++; break;
         case 10:figure = 8; map[last-side-1] = ' '; break;
-        case 11:figure = 3;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; if(head%side == side-3) head--; break;
-        case 12:figure = 13;map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; if(head%side == 1) head++; if(head%side == side-1) head--; break;
-        case 13:figure = 11; map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
+        case 11:figure = 13;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; if(head%side == 0) head+=2; if(head%side == side-3) head++; break;
+        case 12:figure = 3; map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; if(head%side == 1) head--; if(head%side == side-2) head-=2; break;
+        case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 17;map[last-1] = map[last+1] = ' '; if(head%side == 1) head--; break;
         case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; break;
@@ -242,7 +221,29 @@ void change()
         case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
 }
-void read_value() //inputting value from user
+void changeShapeLeft()
+{
+    switch(figure)
+    {
+        case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
+        case 3: figure = 13;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head+=2; if(head%side == side-4) head+=2; break;
+        case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
+        case 5: figure = 2; map[last-side] = ' '; if(head%side == side-2) head--; break;
+        case 7: figure = 8; map[last+1] = ' '; head++;break;
+        case 8: figure = 10;map[last-1] = ' '; break;
+        case 9: figure = 7; map[last-side+1] = ' '; break;
+        case 10:figure = 9; map[last-side-1] = ' '; head--;break;
+        case 11:figure = 12;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; if(head%side == 0) head++; if(head%side == side-3) head++; break;
+        case 12:figure = 11;map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; if(head%side == 1) head--; if(head%side == side-2) head--; break;
+        case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head-=2; break;
+        case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
+        case 15:figure = 18;map[last-1] = map[last+1] = ' ';  break;
+        case 16:figure = 17;map[last-side+1] = map[last-side-1] = ' '; break;
+        case 17:figure = 15;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
+        case 18:figure = 16;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
+    }
+}
+void readValue() //inputting value from user
 {   
     static struct termios oldt, newt;
     tcgetattr( STDIN_FILENO, &oldt);
@@ -251,53 +252,50 @@ void read_value() //inputting value from user
     tcsetattr( STDIN_FILENO, TCSANOW, &newt);
  
     char c = getchar();
-    switch(c)
-    {
-        case 'd': 
-        case 'a': 
-        case 'w':
-        case 't':value = c;
-    }cout<<value;
+    if (c == 'd' || c == 'a' || c == 'w' || c == 't' || c == 'q') value = c;
     if (p[counter]== 6 && (value == 'a' || value == 'd') && (map[head+side] != 'x' || map[head+side+1] != 'x')) map[last+1] = ' ';
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
     cv.notify_one();
 }
-void take_input() //function to accept the value parallelly while game is proceeding.  
+void takeInput() //function to accept the value parallelly while game is proceeding.  
 {
-    thread th(read_value);
+    thread th(readValue);
     mutex mtx;
     unique_lock<mutex> lck(mtx);
     while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) control();
     th.join();
     control();
 }
-void control() //Converts user input to the direction snake must move and stores all the movements into the array
+void control() //Converts user input to the direction block must move
 {
     last = head;
     convert();
     if (value == 'd')
     {
-        m = 0;plag = false;
-        while(m < v.size())
-        {
+        m = 0;
+        plag = false;
+        while(m < v.size()){
             if(map[head+side+v[m]+1] == 'x' || head%side == side-block_length-1) plag = true;
             m++;
         }
         if(!plag) head++;
     }
-    if (value == 'a')
-    {
-        m = 0;plag = false;
-        while(m < u.size())
-        {
+    if (value == 'a'){
+        m = 0;
+        plag = false;
+        while(m < u.size()){
             if(map[head+side+u[m]-2] == 'x' || head%side == block_width) plag = true;
             m++;
         }
         if(!plag) head--;
     }
     plag = false;
-    if(value == 'w') change();
-    if(value == 't') {system("clear");gameToggle(score,false);}
+    if (value == 'w') changeShapeRight();
+    if (value == 'q') changeShapeLeft();
+    if (value == 't') {
+        system("clear");
+        gameToggle(score,false);
+    }
     process();
 }
 void process()   //Brain of the program. Entire game operation happens here. 
@@ -305,10 +303,10 @@ void process()   //Brain of the program. Entire game operation happens here.
     system("clear");
     if (map[head+side] == 'x' && head-(block_height)*side <= side) gameToggle(score,false);
     head += side;
-    value = 'q';
-    shape();
-    if (head == side/2) {
-        destroy();
+    value = 'm';
+    createShape();
+    if (head == (side-1)/2) {
+        destroyBlocks();
         counter++;
         convert();
     }
@@ -335,25 +333,22 @@ int main()
     mainMenu();
 }
 void gameToggle(short score, bool toggle) 
-{   
-    do{
-        if(toggle) take_input();
-        else
-        {
-            fileManage(to_string(pace) + to_string(level),'s');
-            fileManage(to_string(score),'o');
-            cout<<"Game Over!\nScore:"<<score;
-            cin>>i;
-            abort();
-        }
-    }while(toggle);
+{
+    if(toggle) takeInput();
+    else
+    {
+        fileManage(to_string(pace) + to_string(level),'s');
+        fileManage(to_string(score),'o');
+        cout<<"Game Over!\nScore:"<<score;
+        cin>>i;
+        abort();
+    }
+    gameToggle(score,true);
 }
-void mainMenu()   //Main Menu
+void mainMenu()   
 {   
-    gameToggle(0,true);
     char choice = 'z';
-    cout<<"\nCreated by Allen\n";
-    cout<<"Press:\n1 to Play\n2 for Help\n3 for Game Settings\n4 to exit\n";
+    cout<<"\nCreated by Allen\nPress:\n1 to Play\n2 for Help\n3 for Game Settings\n4 to exit\n";
     cin>>choice;
     system("clear");
     if(choice == '1') gameToggle(0,true);
@@ -386,9 +381,7 @@ void fileManage(string data, char option)
         {
             string s;
             cout<<"Welcome back to the game!\nThe highscore is ";
-            while (fin.good()) {
-                getline(fin,s);
-            }
+            while (fin.good()) getline(fin,s);
             pace  = s[0] - '0';
             level = s[1] - '0';
             if (highscore < stoi(s.substr(2))) highscore = stoi(s.substr(2)) ;
