@@ -18,10 +18,10 @@
 #include <time.h>
 using namespace std;
 
+const short side = 14;
 short i,j,levelCounter,score = 0, figure = 0, levelShift, block = 0;
 short last = 0,highscore = 0, previewFigure = 0, listCounter = 2;
-const short side = 14;
-short speed = 1000, level = 2, pace = 1, head = (side-1)/2;
+short speed = 1000, pace = 1, head = (side-1)/2;
 short block_length = 0, block_height = 0, block_width = 0;
 bool hitWall = false;
 const short area = side * side;
@@ -48,25 +48,25 @@ void blockPreview()
     previewFigure = shapeList[listCounter];
     switch(previewFigure)
     {
-        case 1: preview = "x\n\n";        break;
-        case 2: preview = "xx\n\n";       break;
-        case 3: preview = " xx\nxx\n";    break;
-        case 4: preview = "xxxx\n\n";     break;
-        case 5: preview = "x\nx\n";       break;
-        case 6: preview = "xx\nxx\n";     break;
-        case 7: preview = "x\nxx\n";      break;
-        case 8: preview = " x\nxx\n";     break;
-        case 9: preview = "xx\nx\n";      break;
-        case 10:preview = "xx\n x\n";     break;
-        case 11:preview = " x\nxx\nx";    break;
-        case 12:preview = "x\nxx\n x";    break;
-        case 13:preview = "xx\n xx\n";    break;
-        case 14:preview = "x\nx\nx\nx";   break;
-        case 15:preview = " x \nxxx\n";   break; 
-        case 16:preview = "xxx\n x \n";   break;
-        case 17:preview = "x\nxx\nx";     break;
-        case 18:preview = " x\nxx\n x";   break;
-        case 19:preview = " x \nxxx\n x ";break;
+        case 1: preview = "x\n\n\n";        break;
+        case 2: preview = "xx\n\n\n";       break;
+        case 3: preview = " xx\nxx\n\n";    break;
+        case 4: preview = "xxxx\n\n\n";     break;
+        case 5: preview = "x\nx\n\n";       break;
+        case 6: preview = "xx\nxx\n\n";     break;
+        case 7: preview = "x\nxx\n\n";      break;
+        case 8: preview = " x\nxx\n\n";     break;
+        case 9: preview = "xx\nx\n\n";      break;
+        case 10:preview = "xx\n x\n\n";     break;
+        case 11:preview = " x\nxx\nx\n";    break;
+        case 12:preview = "x\nxx\n x\n";    break;
+        case 13:preview = "xx\n xx\n\n";    break;
+        case 14:preview = "x\nx\nx\nx";     break;
+        case 15:preview = " x \nxxx\n\n";   break; 
+        case 16:preview = "xxx\n x \n\n";   break;
+        case 17:preview = "x\nxx\nx\n";     break;
+        case 18:preview = " x\nxx\n x\n";   break;
+        case 19:preview = " x \nxxx\n x \n";break;
     }
     cout<<preview<<endl;
 }
@@ -288,6 +288,8 @@ void control() //Converts user input to the direction block must move
 {
     last = head;
     convert();
+    i = 0;
+    hitWall = false;
     if (value == 'd')
     {
         i = 0;
@@ -356,11 +358,10 @@ void gameToggle(bool toggle)
     if(toggle) takeInput();
     else
     {
-        fileManage(to_string(pace) + to_string(level),'s');
+        fileManage(to_string(pace), 's');
         fileManage(to_string(score),'o');
         cout<<"Game Over!\nScore:"<<score;
         cin>>i;
-        abort();
     }
     gameToggle(true);
 }
@@ -382,9 +383,6 @@ void mainMenu()
     {
         cout<<"Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
         cin>>pace;
-        cout<<"Control the Game Difficulty level. PRESS\n1 : LEVEL 1\n2 : LEVEL 2\n";
-        cin>>level;
-        level = (level == 1) ? 1 : 2;
         speedSelector();
         gameToggle(true);
     }
@@ -398,12 +396,11 @@ void fileManage(string data, char option)
         if(!fin) cout<<"Welcome to the game!"; 
         else
         {
-            string s;
+            string save_data;
             cout<<"Welcome back to the game!\nThe highscore is ";
-            while (fin.good()) getline(fin,s);
-            pace  = s[0] - '0';
-            level = s[1] - '0';
-            if (highscore < stoi(s.substr(2))) highscore = stoi(s.substr(2)) ;
+            while (fin.good()) getline(fin,save_data);
+            pace  = save_data[0] - '0';
+            if (highscore < stoi(save_data.substr(2))) highscore = stoi(save_data.substr(2)) ;
             cout<<highscore;
             speedSelector();
         }
@@ -430,8 +427,8 @@ void speedSelector()
 {
     switch(pace)
     {
-        case 1: speed = 800;break;
-        case 3: speed = 800;break;
+        case 1: speed = 1000;break;
+        case 3: speed = 600;break;
         default:speed = 800;pace = 2;break;
     }
 }
