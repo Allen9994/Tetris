@@ -406,8 +406,7 @@ void fileManage(string data, char option)
     }
     else if(option == 'o'){
         ofstream fout("tetris_data.txt", ios::app);
-        if(stoi(data) > highscore) 
-        {
+        if(stoi(data) > highscore){
             highscore = stoi(data);
             cout<<"HIGHSCORE! "<<highscore<<endl;
         }
