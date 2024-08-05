@@ -21,7 +21,7 @@ using namespace std;
 const short side = 14;
 short i,j,levelCounter,score = 0, figure = 0, levelShift, block = 0;
 short last = 0,highscore = 0, previewFigure = 0, listCounter = 2;
-short speed = 1000, pace = 1, head = (side-1)/2;
+short speed = 1000, pace = 2, head = (side-1)/2;
 short block_length = 0, block_height = 0, block_width = 0;
 bool hitWall = false;
 const short area = side * side;
@@ -42,12 +42,12 @@ void process();
 void mainMenu();
 void fileManage(string,char);
 void speedSelector();
+void checkFileStatus();
 
 void blockPreview()
 {
     previewFigure = shapeList[listCounter];
-    switch(previewFigure)
-    {
+    switch(previewFigure){
         case 1: preview = "x\n\n\n";        break;
         case 2: preview = "xx\n\n\n";       break;
         case 3: preview = " xx\nxx\n\n";    break;
@@ -80,13 +80,12 @@ void destroyBlocks()
 {
     figure = shapeList[listCounter];
     levelCounter = area-1;
-    while(levelCounter >= side)
-    {
+    while(levelCounter >= side) {
         if(map[levelCounter] == 'x') block++;
         if(block == side-1){
             score++;
             levelShift = levelCounter-1;
-            while(levelShift >= 0){
+            while(levelShift >= 0) {
                 map[levelShift+side] = map[levelShift];
                 levelShift--;
             }
@@ -101,8 +100,7 @@ void convert()
 {
     v.clear();
     u.clear();
-    switch (figure)
-    {
+    switch (figure){
         case 1:v = {0};                     u = {1};                            block_length=1;block_height=0;block_width=0;break;
         case 2:v = {1};                     u = {1};                            block_length=2;block_height=0;block_width=0;break;
         case 3:v = {1,-side+2};             u = {1,-side};                      block_length=3;block_height=1;block_width=0;break;
@@ -220,8 +218,7 @@ void createShape()
 }
 void changeShapeRight()
 {
-    switch(figure)
-    {
+    switch(figure){
         case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++;break;
         case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head++; if(head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
@@ -235,15 +232,14 @@ void changeShapeRight()
         case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 17;map[last-1] = map[last+1] = ' '; if(head%side == 1) head--; break;
-        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; break;
+        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; head++; break;
         case 17:figure = 16;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
         case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
 }
 void changeShapeLeft()
 {
-    switch(figure)
-    {
+    switch(figure){
         case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
         case 3: figure = 13;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head+=2; if(head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
@@ -290,8 +286,7 @@ void control() //Converts user input to the direction block must move
     convert();
     i = 0;
     hitWall = false;
-    if (value == 'd')
-    {
+    if (value == 'd'){
         i = 0;
         hitWall = false;
         while(i < v.size()){
@@ -325,7 +320,7 @@ void process()   //Brain of the program. Entire game operation happens here.
     head += side;
     value = 'm';
     createShape();
-    if (head == (side-1)/2) {
+    if (head == (side-1)/2){
         destroyBlocks();
         listCounter++;
         convert();
@@ -336,10 +331,8 @@ void display()
 {
     blockPreview();
     cout<<uline<<endl;
-    for (j=0;j<side;j++)  //Designing the 2Dmodel : Borders not made yet
-    {   
-        for (i=0;i<side;i++)
-        {
+    for (j=0;j<side;j++){  //Designing the 2Dmodel : Borders not made yet   
+        for (i=0;i<side;i++){
             if(i == side-1 || i == 0)       cout<<"|";
             if(i == side-1 && j == side-1)  cout<<endl<<bline;
             cout<<map[(j*side)+i];
@@ -356,31 +349,28 @@ int main()
 void gameToggle(bool toggle) 
 {
     if(toggle) takeInput();
-    else
-    {
+    else{
         fileManage(to_string(pace), 's');
-        fileManage(to_string(score),'o');
-        cout<<"Game Over!\nScore:"<<score;
-        cin>>i;
+        fileManage(to_string(score*pace),'o');
+        cout<<"Game Over!\nScore:"<<score*pace<<"\n";
+        abort();
     }
     gameToggle(true);
 }
 void mainMenu()   
 {   
     char choice = 'z';
-    cout<<"\nCreated by Allen\nPress:\n1 to Play\n2 for Help\n3 for Game Settings\n4 to exit\n";
+    cout<<"\nCreated by Allen\nPress:\n\t1 to Play\n\t2 for Help\n\t3 for Game Settings\n\t4 to exit\n";
     cin>>choice;
     system("clear");
     if(choice == '1') gameToggle(true);
-    if(choice == '2')   //Instructions
-    {   
-        cout<<"CONTROLS\nPRESS\n a TO MOVE LEFT\n d TO MOVE RIGHT \n w TO ROTATE RIGHT \n q TO ROTATE LEFT";
+    if(choice == '2'){   //Instructions   
+        cout<<"CONTROLS\nPRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT";
         cin>>choice;
         system("clear");
         main();
     }
-    if(choice == '3')
-    {
+    if(choice == '3'){
         cout<<"Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
         cin>>pace;
         speedSelector();
@@ -390,29 +380,31 @@ void mainMenu()
 }
 void fileManage(string data, char option)
 {
-    if(option == 'i')
-    {
+    if(option == 'i'){
         ifstream fin("tetris_data.txt"); 
-        if(!fin) cout<<"Welcome to the game!"; 
-        else
-        {
+        if(!fin) cout<<"Welcome to Tetris!"; 
+        else{
             string save_data;
-            cout<<"Welcome back to the game!\nThe highscore is ";
             while (fin.good()) getline(fin,save_data);
-            pace  = save_data[0] - '0';
-            if (highscore < stoi(save_data.substr(2))) highscore = stoi(save_data.substr(2)) ;
+            if(save_data.size() <= 1 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
+                checkFileStatus();
+                fin.close();
+                abort();
+            }
+            pace = save_data[0] - '0';
+            cout<<"Welcome back to Tetris!\nThe highscore is ";
+            if (highscore < stoi(save_data.substr(1))) highscore = stoi(save_data.substr(1)) ;
             cout<<highscore;
             speedSelector();
         }
         fin.close();
     }
-    else if(option == 's') {
+    else if(option == 's'){
         ofstream fout("tetris_data.txt",ios::app);
         fout<<endl<<data;
         fout.close();
     }
-    else if(option == 'o')
-    {
+    else if(option == 'o'){
         ofstream fout("tetris_data.txt", ios::app);
         if(stoi(data) > highscore) 
         {
@@ -425,10 +417,18 @@ void fileManage(string data, char option)
 }
 void speedSelector()
 {
-    switch(pace)
-    {
+    switch(pace){
         case 1: speed = 1000;break;
         case 3: speed = 600;break;
         default:speed = 800;pace = 2;break;
     }
+}
+void checkFileStatus()
+{
+    cout<<"The save file is corrupted! \nKindly restart the game as the save file is reset\n";
+    ofstream fout("tetris_data.txt",ios::app);
+    fout<<endl<<"20";
+    fout.close();
+    sleep(1);
+    cout<<"Terminating..\n";
 }
