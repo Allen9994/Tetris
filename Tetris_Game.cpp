@@ -1,4 +1,4 @@
-//Start of the program
+//Start of program
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -16,36 +16,67 @@
 #include <termios.h> //termios, TCSANOW, ECHO, ICANON
 #include <unistd.h> 
 #include <time.h>
+
 using namespace std;
 
-const short side = 14;
-short i,j,levelCounter,score = 0, figure = 0, levelShift, block = 0;
-short last = 0,highscore = 0, previewFigure = 0, listCounter = 2;
-short speed = 1000, pace = 2, head = (side-1)/2;
-short block_length = 0, block_height = 0, block_width = 0;
-bool hitWall = false;
-const short area = side * side;
-char value = 'm';
-short shapeList[area-1] = {0};
-string map(area,' ');
-vector <short>u;
-vector <short>v;
-string preview = "";
-string uline(side+1,'_');
-string bline(side+1,'"');
+class Tetris {
+private:
+    int levelCounter, score, figure, levelShift, block;
+    int last, highscore, previewFigure, listCounter;
+    int i, speed, pace, head, side, area;
+    int block_length, block_height, block_width;
+    bool hitWall;
+    char value;
+    vector<int> u, v, shapeList;
+    string map, uline, bline, preview;
 
-condition_variable cv;
-void control();
-void display();
-void gameToggle(bool);
-void process();
-void mainMenu();
-void fileManage(string,char);
-void speedSelector();
-void checkFileStatus();
+    mutex mtx;
+    condition_variable cv;
 
-void blockPreview()
-{
+    void blockPreview();
+    void initialize();
+    void destroyBlocks();
+    void convertShape();
+    void createShape();
+    void changeShapeRight();
+    void changeShapeLeft();
+    void readValue();
+    void takeInput();
+    void gameControl();
+    void gameAlgorithm();
+    void gameDisplay();
+    void fileManage(string data, char option);
+    void speedSelector();
+    void checkFileStatus();
+    void gameToggle(bool toggle);
+    void mainMenu();
+
+    public:
+        Tetris(int size_map) 
+                 : levelCounter(0), score(0), figure(0), levelShift(0), block(0), last(0),
+                   highscore(0), previewFigure(0), listCounter(2), speed(1000), pace(2),
+                   head(0), block_length(0), block_height(0), block_width(0), side(size_map),
+                   area(0), hitWall(false), value('m') {}
+    void start() {
+        fileManage("0", 'i');
+        mainMenu();
+    }
+};
+
+void Tetris::initialize() {
+    shapeList.clear();
+    area = side * side;
+    head = (side - 1) / 2;
+    map = string(area, ' ');
+    uline = string(side + 1, '_');
+    bline = string(side + 1, '"');
+    map = string(area,' ');
+    srand((unsigned) time(0));
+    for (int index = 0; index < area; index++) shapeList.push_back((rand() % 19) + 1);
+    figure = shapeList[listCounter];
+}
+
+void Tetris::blockPreview() {
     previewFigure = shapeList[listCounter];
     switch(previewFigure){
         case 1: preview = "x\n\n\n";        break;
@@ -70,14 +101,8 @@ void blockPreview()
     }
     cout<<preview<<endl;
 }
-void randomize()
-{
-    srand((unsigned) time(0));
-    for (short index = 0; index < area; index++) shapeList[index] = (rand() % 19) + 1;
-    figure = shapeList[listCounter];
-}
-void destroyBlocks()
-{
+
+void Tetris::destroyBlocks() {
     figure = shapeList[listCounter];
     levelCounter = area-1;
     while(levelCounter >= side) {
@@ -96,8 +121,8 @@ void destroyBlocks()
     }
     block = 0;
 }
-void convert()
-{
+
+void Tetris::convertShape() {
     v.clear();
     u.clear();
     switch (figure){
@@ -122,8 +147,8 @@ void convert()
         case 19:v= {0,-side+1,(2*side)};    u = {1,-side-2,(2*side)-1};         block_length=2;block_height=2;block_width=1;break;
     }
 }
-void createShape()
-{
+
+void Tetris::createShape() {
     map[last] = ' ';
     map[head] = 'x';
     if(figure == 2){
@@ -216,8 +241,8 @@ void createShape()
     }
     if (map[head+side] == 'x' || (head >= area-side && head <= area)) head = (side-1)/2;
 }
-void changeShapeRight()
-{
+
+void Tetris::changeShapeRight() {
     switch(figure){
         case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++;break;
         case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head++; if(head%side == side-4) head+=2; break;
@@ -237,8 +262,8 @@ void changeShapeRight()
         case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
 }
-void changeShapeLeft()
-{
+
+void Tetris::changeShapeLeft() {
     switch(figure){
         case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
         case 3: figure = 13;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head+=2; if(head%side == side-4) head+=2; break;
@@ -258,49 +283,44 @@ void changeShapeLeft()
         case 18:figure = 16;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
 }
-void readValue() //inputting value from user
-{   
+
+void Tetris::readValue() {
     static struct termios oldt, newt;
-    tcgetattr( STDIN_FILENO, &oldt);
+    tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON);
-    tcsetattr( STDIN_FILENO, TCSANOW, &newt);
- 
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
     char c = getchar();
     if (c == 'd' || c == 'a' || c == 'w' || c == 't' || c == 'q') value = c;
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     cv.notify_one();
 }
-void takeInput() //function to accept the value parallelly while game is proceeding.  
-{
-    thread th(readValue);
-    mutex mtx;
+
+void Tetris::takeInput() {
+    thread th(&Tetris::readValue, this);
     unique_lock<mutex> lck(mtx);
-    while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) control();
+    while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) gameControl();
     th.join();
-    control();
+    gameControl();
 }
-void control() //Converts user input to the direction block must move
-{
+
+void Tetris::gameControl() {
     last = head;
-    convert();
+    convertShape();
     i = 0;
     hitWall = false;
-    if (value == 'd'){
-        i = 0;
+    if (value == 'd') {
         hitWall = false;
-        while(i < v.size()){
+        for(i = 0; i < v.size(); i++) {
             if(map[head+side+v[i]+1] == 'x' || head%side == side-block_length-1) hitWall = true;
-            i++;
         }
         if(!hitWall) head++;
     }
-    if (value == 'a'){
-        i = 0;
+    else if (value == 'a') {
         hitWall = false;
-        while(i < u.size()){
+        for(i = 0; i < u.size(); i++) {
             if(map[head+side+u[i]-2] == 'x' || head%side == block_width) hitWall = true;
-            i++;
         }
         if(!hitWall) head--;
     }
@@ -311,89 +331,58 @@ void control() //Converts user input to the direction block must move
         system("clear");
         gameToggle(false);
     }
-    process();
+    gameAlgorithm();
 }
-void process()   //Brain of the program. Entire game operation happens here. 
-{
+
+void Tetris::gameAlgorithm() {
     system("clear");
-    if (map[head+side] == 'x' && head-(block_height)*side <= side) gameToggle(false);
+    if (map[head + side] == 'x' && head - (block_height) * side <= side) gameToggle(false);
     head += side;
     value = 'm';
     createShape();
-    if (head == (side-1)/2){
+    if (head == (side - 1) / 2) {
         destroyBlocks();
         listCounter++;
-        convert();
+        convertShape();
     }
-    display();
+    gameDisplay();
 }
-void display()
-{
+
+void Tetris::gameDisplay() {
     blockPreview();
-    cout<<uline<<endl;
-    for (j=0;j<side;j++){  //Designing the 2Dmodel : Borders not made yet   
-        for (i=0;i<side;i++){
-            if(i == side-1 || i == 0)       cout<<"|";
-            if(i == side-1 && j == side-1)  cout<<endl<<bline;
-            cout<<map[(j*side)+i];
+    cout << uline << endl;
+    for (int j = 0; j < side; j++) {
+        for (int i = 0; i < side; i++) {
+            if (i == side - 1 || i == 0) cout << "|";
+            if (i == side - 1 && j == side - 1) cout << endl << bline;
+            cout << map[(j * side) + i];
         }
-        cout<<endl;
+        cout << endl;
     }
 }
-int main()  
-{ 
-    fileManage("0",'i');
-    randomize();
-    mainMenu();
-}
-void gameToggle(bool toggle) 
-{
-    if(toggle) takeInput();
-    else{
-        fileManage(to_string(pace), 's');
-        fileManage(to_string(score*pace),'o');
-        cout<<"Game Over!\nScore:"<<score*pace<<"\n";
-        abort();
-    }
-    gameToggle(true);
-}
-void mainMenu()   
-{   
-    char choice = 'z';
-    cout<<"\nCreated by Allen\nPress:\n\t1 to Play\n\t2 for Help\n\t3 for Game Settings\n\t4 to exit\n";
-    cin>>choice;
-    system("clear");
-    if(choice == '1') gameToggle(true);
-    if(choice == '2'){   //Instructions   
-        cout<<"CONTROLS\nPRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT";
-        cin>>choice;
-        system("clear");
-        main();
-    }
-    if(choice == '3'){
-        cout<<"Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
-        cin>>pace;
-        speedSelector();
-        gameToggle(true);
-    }
-    else abort();
-}
-void fileManage(string data, char option)
-{
+
+void Tetris::fileManage(string data, char option) {
     if(option == 'i'){
         ifstream fin("tetris_data.txt"); 
-        if(!fin) cout<<"Welcome to Tetris!"; 
+        if(!fin) {
+            cout<<"Welcome to Tetris!"; 
+            initialize();
+        }
         else{
             string save_data;
             while (fin.good()) getline(fin,save_data);
-            if(save_data.size() <= 1 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
+            if(save_data.size() <= 3 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
                 checkFileStatus();
                 fin.close();
                 abort();
             }
             pace = save_data[0] - '0';
+            side = save_data[1] - '0';
+            side*= 10;
+            side+= save_data[2] - '0';
+            initialize();
             cout<<"Welcome back to Tetris!\nThe highscore is ";
-            if (highscore < stoi(save_data.substr(1))) highscore = stoi(save_data.substr(1)) ;
+            if (highscore < stoi(save_data.substr(3))) highscore = stoi(save_data.substr(3)) ;
             cout<<highscore;
             speedSelector();
         }
@@ -414,20 +403,71 @@ void fileManage(string data, char option)
         fout.close();
     }
 }
-void speedSelector()
-{
-    switch(pace){
-        case 1: speed = 1000;break;
-        case 3: speed = 600;break;
-        default:speed = 800;pace = 2;break;
+
+void Tetris::speedSelector() {
+    switch (pace) {
+        case 1: speed = 1000; break;
+        case 3: speed = 600; break;
+        default: speed = 800; pace = 2; break;
     }
 }
-void checkFileStatus()
-{
-    cout<<"The save file is corrupted! \nKindly restart the game as the save file is reset\n";
-    ofstream fout("tetris_data.txt",ios::app);
-    fout<<endl<<"20";
+
+void Tetris::checkFileStatus() {
+    cout << "The save file is corrupted! \nKindly restart the game as the save file is reset\n";
+    ofstream fout("tetris_data.txt", ios::app);
+    fout << endl << "2120";
     fout.close();
     sleep(1);
-    cout<<"Terminating..\n";
+    cout << "Terminating..\n";
 }
+
+void Tetris::gameToggle(bool toggle) {
+    if (toggle) takeInput();
+    else {
+        fileManage(to_string(pace) + to_string(side), 's');
+        fileManage(to_string(score * pace), 'o');
+        cout << "Game Over!\nScore:" << score * pace << "\n";
+        abort();
+    }
+    gameToggle(true);
+}
+
+void Tetris::mainMenu() {
+    char choice = 'z';
+    cout << "\nPress:\n\t1 to Play\n\t2 for Help\n\t3 for Game Settings\n\t4 to Exit\n";
+    cin >> choice;
+    system("clear");
+    if (choice == '1') gameToggle(true);
+    if (choice == '2') {
+        cout << "gameControlS\nPRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT";
+        cin >> choice;
+        system("clear");
+        mainMenu();
+    }
+    if (choice == '3') {
+        cout << "gameControl the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
+        cin >> pace;
+        speedSelector();
+        cout << "Enter the map size of range[10-15]\n";
+        string size_entered;
+        cin>>size_entered;
+        if(all_of(size_entered.begin(),size_entered.end(),::isdigit)) {
+            int num = stoi(size_entered);
+            if(num > 9 && num < 16) {
+                side = num;
+            }
+            else cout<<"Size entered not within range!\n Reverting to previous size...\n";
+            sleep(3);
+            initialize();
+        }
+        gameToggle(true);
+    }
+    else abort();
+}
+
+int main() {
+    Tetris game(14);
+    game.start();
+    return 0;
+}
+//End of program
