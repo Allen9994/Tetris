@@ -318,15 +318,16 @@ void Tetris::gameControl() {
         }
         head -= !hitWall;
     }
-    hitWall = false;
-    if (value == 'w') changeShapeRight();
-    if (value == 'q') changeShapeLeft();
-    if (value == 't') gameToggle(false);
+    switch(value) {
+        case 'w': changeShapeRight();   break;
+        case 'q': changeShapeLeft();    break;
+        case 't': gameToggle(false);    break;
+    }
     gameAlgorithm();
 }
 
 void Tetris::gameAlgorithm() {
-    if (map[head + side] == 'x' && head - (height) * side <= side) gameToggle(false);
+    if (map[head + side] == 'x' && head - (height * side) <= side) gameToggle(false);
     system("clear");
     head += side;
     value = 'm';
