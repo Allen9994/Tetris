@@ -17,8 +17,8 @@ using namespace std;
 class Tetris {
 private:
     short levelCounter, score, figure, levelShift, block;
-    short last, highscore, previewFigure, listCounter;
-    short index, speed, pace, head, side, area, horz, vert;
+    short index, head, last, highscore, listCounter;
+    short speed, pace, side, area, horz, vert;
     short length, height, width;
     bool hitWall;
     char input, value;
@@ -48,8 +48,8 @@ private:
 
     public:
         Tetris(short size_map) 
-                 : levelCounter(0), score(0), figure(0), levelShift(0), block(0), last(0),
-                   highscore(0), previewFigure(0), listCounter(2), speed(1000), pace(2),
+                 : levelCounter(0), figure(0), levelShift(0), block(0), last(0),
+                   score(0), highscore(0), listCounter(2), speed(1000), pace(2),
                    head(0), length(0), height(0), width(0), side(size_map), input(' '),
                    saveFileName("tetris_data.txt"), area(0), hitWall(false), value('m') {}
     void start() {
@@ -73,8 +73,7 @@ void Tetris::initialize() {
 }
 
 void Tetris::blockPreview() {
-    previewFigure = shapeList[listCounter];
-    switch(previewFigure) { 
+    switch(shapeList[listCounter]) { 
         case 1: preview = "x\n\n\n";        break;
         case 2: preview = "xx\n\n\n";       break;
         case 3: preview = " xx\nxx\n\n";    break;
