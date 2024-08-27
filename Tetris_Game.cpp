@@ -21,7 +21,7 @@ private:
     short index, speed, pace, head, side, area, horz, vert;
     short length, height, width;
     bool hitWall;
-    char value;
+    char input, value;
     vector<short> u, v, shapeList;
     string map, uline, bline, preview, saveFileName;
 
@@ -50,7 +50,7 @@ private:
         Tetris(short size_map) 
                  : levelCounter(0), score(0), figure(0), levelShift(0), block(0), last(0),
                    highscore(0), previewFigure(0), listCounter(2), speed(1000), pace(2),
-                   head(0), length(0), height(0), width(0), side(size_map),
+                   head(0), length(0), height(0), width(0), side(size_map), input(' '),
                    saveFileName("tetris_data.txt"), area(0), hitWall(false), value('m') {}
     void start() {
         system("clear");
@@ -288,8 +288,8 @@ void Tetris::readValue() {
     newt.c_lflag &= ~(ICANON);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
-    char c = getchar();
-    if (c == 'd' || c == 'a' || c == 'w' || c == 't' || c == 'q') value = c;
+    input = getchar();
+    if (input == 'd' || input == 'a' || input == 'w' || input == 't' || input == 'q') value = input;
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     cv.notify_one();
 }
