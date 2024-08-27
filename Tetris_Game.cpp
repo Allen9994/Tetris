@@ -307,14 +307,12 @@ void Tetris::gameControl() {
     convertShape();
     hitWall = false;
     if (value == 'd') {
-        hitWall = false;
         for(index = 0; index < v.size(); index++) {
             if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
         }
         head += !hitWall;
     }
     else if (value == 'a') {
-        hitWall = false;
         for(index = 0; index < u.size(); index++) {
             if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
         }
