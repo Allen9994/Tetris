@@ -12,8 +12,6 @@
 #include <unistd.h>
 #include <ctime>
 
-using namespace std;
-
 class Tetris {
 private:
     short levelCounter, score, figure, levelShift, block;
@@ -22,11 +20,11 @@ private:
     short length, height, width;
     bool hitWall;
     char input, value;
-    vector<short> u, v, shapeList;
-    string map, uline, bline, preview, saveFileName;
+    std::vector<int> u, v, shapeList;
+    std::string map, uline, bline, preview, saveFileName;
 
-    mutex mtx;
-    condition_variable cv;
+    std::mutex mtx;
+    std::condition_variable cv;
 
     void blockPreview();
     void initialize();
@@ -40,20 +38,19 @@ private:
     void gameControl();
     void gameAlgorithm();
     void gameDisplay();
-    void fileManage(string data, char option);
+    void fileManage(std::string data, char option);
     void speedSelector();
     void handleFileStatus();
     void gameToggle(bool toggle);
     void mainMenu();
 
     public:
-        Tetris(short size_map) 
+        Tetris() 
                  : levelCounter(0), figure(0), levelShift(0), block(0), last(0),
                    score(0), highscore(0), listCounter(2), speed(1000), pace(2),
-                   head(0), length(0), height(0), width(0), side(size_map), input(' '),
+                   head(0), length(0), height(0), width(0), side(14), input(' '),
                    saveFileName("tetris_data.txt"), area(0), hitWall(false), value('m') {}
     void start() {
-        system("clear");
         fileManage("0", 'i');
         mainMenu();
     }
@@ -63,10 +60,10 @@ void Tetris::initialize() {
     shapeList.clear();
     area = side * side;
     head = (side - 1) / 2;
-    map = string(area, ' ');
-    uline = string(side + 1, '_');
-    bline = string(side + 1, '"');
-    map = string(area,' ');
+    map = std::string(area, ' ');
+    uline = std::string(side + 1, '_');
+    bline = std::string(side + 1, '"');
+    map = std::string(area,' ');
     srand((unsigned) time(0));
     for (index = 0; index < area; index++) shapeList.push_back((rand() % 19) + 1);
     figure = shapeList[listCounter];
@@ -94,7 +91,7 @@ void Tetris::blockPreview() {
         case 18:preview = " x\nxx\n x\n";   break;
         case 19:preview = " x \nxxx\n x \n";break;
     }
-    cout<<preview<<endl;
+    std::cout<<preview<<std::endl;
 }
 
 void Tetris::destroyBlocks() {
@@ -104,7 +101,7 @@ void Tetris::destroyBlocks() {
         if(map[levelCounter] == 'x') block++;
         if(block == side-1) { 
             score++;
-            cout<<"\a";
+            std::cout<<"\a";
             levelShift = levelCounter-1;
             while(levelShift >= 0) {
                 map[levelShift+side] = map[levelShift];
@@ -294,9 +291,9 @@ void Tetris::readValue() {
 }
 
 void Tetris::takeInput() {
-    thread th(&Tetris::readValue, this);
-    unique_lock<mutex> lck(mtx);
-    while (cv.wait_for(lck, chrono::milliseconds(speed)) == cv_status::timeout) gameControl();
+    std::thread th(&Tetris::readValue, this);
+    std::unique_lock<std::mutex> lck(mtx);
+    while (cv.wait_for(lck, std::chrono::milliseconds(speed)) == std::cv_status::timeout) gameControl();
     th.join();
     gameControl();
 }
@@ -341,26 +338,26 @@ void Tetris::gameAlgorithm() {
 
 void Tetris::gameDisplay() {
     blockPreview();
-    cout << uline << endl;
+    std::cout << uline << std::endl;
     for (vert = 0; vert < side; vert++) {
         for (horz = 0; horz < side; horz++) {
-            if (horz == side - 1 || horz == 0) cout << "|";
-            if (horz == side - 1 && vert  == side - 1) cout << endl << bline;
-            cout << map[(vert  * side) + horz];
+            if (horz == side - 1 || horz == 0) std::cout << "|";
+            if (horz == side - 1 && vert  == side - 1) std::cout << std::endl << bline;
+            std::cout << map[(vert  * side) + horz];
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
-void Tetris::fileManage(string data, char option) {
+void Tetris::fileManage(std::string data, char option) {
     if(option == 'i') { 
-        ifstream fin(saveFileName); 
+        std::ifstream fin(saveFileName); 
         if(!fin) {
-            cout<<"Welcome to Tetris!"; 
+            std::cout << "Welcome to Tetris!"; 
             initialize();
         }
         else {
-            string save_data;
+            std::string save_data;
             while (fin.good()) getline(fin,save_data);
             if(save_data.size() < 4 || save_data.size() > 7 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
                 handleFileStatus();
@@ -372,23 +369,23 @@ void Tetris::fileManage(string data, char option) {
             side*= 10;
             side+= save_data[2] - '0';
             initialize();
-            cout<<"Welcome back to Tetris!\nThe highscore is ";
+            std::cout << "Welcome back to Tetris!\nThe highscore is ";
             if (highscore < stoi(save_data.substr(3))) highscore = stoi(save_data.substr(3));
-            cout << highscore;
+            std::cout << highscore;
             speedSelector();
         }
         fin.close();
     }
     else if(option == 's') {
-        ofstream fout(saveFileName,ios::app);
-        fout << endl << data;
+        std::ofstream fout(saveFileName,std::ios::app);
+        fout << std::endl << data;
         fout.close();
     }
     else if(option == 'o') {
-        ofstream fout(saveFileName, ios::app);
+        std::ofstream fout(saveFileName, std::ios::app);
         if(stoi(data) > highscore) { 
             highscore = stoi(data);
-            cout<<"HIGHSCORE! "<<highscore<<endl;
+            std::cout << "HIGHSCORE! "<<highscore<<std::endl;
         }
         fout << highscore;
         fout.close();
@@ -404,21 +401,21 @@ void Tetris::speedSelector() {
 }
 
 void Tetris::handleFileStatus() {
-    cout << "The save file is corrupted! \nKindly restart the game as the save file is reset\n";
-    ofstream fout(saveFileName, ios::app);
-    fout << endl << "2120";
+    std::cout << "The save file is corrupted! \nKindly restart the game as the save file is reset\n";
+    std::ofstream fout(saveFileName, std::ios::app);
+    fout << std::endl << "2120";
     fout.close();
     sleep(1);
-    cout << "Terminating..\n";
+    std::cout << "Terminating..\n";
 }
 
 void Tetris::gameToggle(bool toggle) {
     if (toggle) takeInput();
     else {
         system("clear");
-        fileManage(to_string(pace) + to_string(side), 's');
-        fileManage(to_string(score * pace), 'o');
-        cout << "Game Over!\nScore:" << score * pace << "\n";
+        fileManage(std::to_string(pace) + std::to_string(side), 's');
+        fileManage(std::to_string(score * pace), 'o');
+        std::cout << "Game Over!\nScore:" << score * pace << "\n";
         abort();
     }
     gameToggle(true);
@@ -426,35 +423,41 @@ void Tetris::gameToggle(bool toggle) {
 
 void Tetris::mainMenu() {
     char choice = 'z';
-    cout << "\nPress:\n\t1 to Play\n\t2 for Help\n\t3 for Game Settings\n\t4 to Exit\n";
-    cin >> choice;
+    std::cout << "\nPress:\n\t1 to Play\n\t2 for Help\n\t3 for Game Settings\n\t4 to Exit\n";
+    std::cin >> choice;
     system("clear");
     if (choice == '1') gameToggle(true);
     if (choice == '2') {
-        cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT\n \tt TO QUIT GAME \n";
+        std::cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT\n \tt TO QUIT GAME \n";
         sleep(3);
-        start();
+        system("clear");
+        mainMenu();
     }
     if (choice == '3') {
-        cout << "Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
-        cin >> pace;
+        std::string value_entered;
+        std::cout << "Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
+        std::cin >> value_entered;
+        if(all_of(value_entered.begin(),value_entered.end(), ::isdigit)) pace = stoi(value_entered);
         speedSelector();
-        cout << "Enter the map size of range[10-15]\n";
-        string size_entered;
-        cin >> size_entered;
-        if(all_of(size_entered.begin(),size_entered.end(), ::isdigit)) {
-            short num = stoi(size_entered);
-            if(num > 9 && num < 16) side = num;
-            else cout<<"Size entered not within range!\n Reverting to previous size...\n";
-            sleep(2);
+        std::cout << "Enter the map size of range[10-15]\n";
+        std::cin >> value_entered;
+        if(all_of(value_entered.begin(),value_entered.end(), ::isdigit)) {
+            short num = stoi(value_entered);
+            if(num > 9 && num < 16) {
+                side = num;
+                initialize();
+            }
+            else std::cout<<"Size entered not within range!\nReverting to previous size...\n";
+            sleep(1);
         }
-        start();
+        system("clear");
+        mainMenu();
     }
     else abort();
 }
 
 int main() {
-    Tetris game(12);
+    Tetris game;
     game.start();
     return 0;
 }
