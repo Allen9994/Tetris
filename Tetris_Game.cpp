@@ -11,6 +11,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <ctime>
+#define MAX_SHAPES 19
 
 class Tetris {
 private:
@@ -21,7 +22,7 @@ private:
     bool hitWall;
     char input, value;
     std::vector<int> u, v, shapeList;
-    std::string map, uline, bline, preview, saveFileName;
+    std::string map, top, bottom, preview, saveFileName;
 
     std::mutex mtx;
     std::condition_variable cv;
@@ -60,12 +61,11 @@ void Tetris::initialize() {
     shapeList.clear();
     area = side * side;
     head = (side - 1) / 2;
-    map = std::string(area, ' ');
-    uline = std::string(side + 1, '_');
-    bline = std::string(side + 1, '"');
+    top = std::string(side + 1, '_');
+    bottom = std::string(side + 1, '"');
     map = std::string(area,' ');
     srand((unsigned) time(0));
-    for (index = 0; index < area; index++) shapeList.push_back((rand() % 19) + 1);
+    for (index = 0; index < area; index++) shapeList.push_back((rand() % MAX_SHAPES) + 1);
     figure = shapeList[listCounter];
 }
 
@@ -338,11 +338,11 @@ void Tetris::gameAlgorithm() {
 
 void Tetris::gameDisplay() {
     blockPreview();
-    std::cout << uline << std::endl;
+    std::cout << top << std::endl;
     for (vert = 0; vert < side; vert++) {
         for (horz = 0; horz < side; horz++) {
             if (horz == side - 1 || horz == 0) std::cout << "|";
-            if (horz == side - 1 && vert  == side - 1) std::cout << std::endl << bline;
+            if (horz == side - 1 && vert  == side - 1) std::cout << std::endl << bottom;
             std::cout << map[(vert  * side) + horz];
         }
         std::cout << std::endl;
