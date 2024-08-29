@@ -61,6 +61,7 @@ void Tetris::initialize() {
     shapeList.clear();
     area = side * side;
     head = (side - 1) / 2;
+    map = std::string(area,' ');
     top = std::string(side + 1, '_');
     bottom = std::string(side + 1, '"');
     map = std::string(area,' ');
