@@ -71,7 +71,7 @@ void Tetris::initialize() {
 }
 
 void Tetris::blockPreview() {
-    switch(shapeList[listCounter]) { 
+    switch (shapeList[listCounter]) { 
         case 1: preview = "x\n\n\n";        break;
         case 2: preview = "xx\n\n\n";       break;
         case 3: preview = " xx\nxx\n\n";    break;
@@ -120,115 +120,115 @@ void Tetris::convertShape() {
     v.clear();
     u.clear();
     switch (figure) { 
-        case 1:v = {0};                     u = {1};                            length=1;height=0;width=0;break;
-        case 2:v = {1};                     u = {1};                            length=2;height=0;width=0;break;
-        case 3:v = {1,-side+2};             u = {1,-side};                      length=3;height=1;width=0;break;
-        case 4:v = {3};                     u = {1};                            length=4;height=0;width=0;break;
-        case 5:v = {0,-side};               u = {1,-side-1};                    length=1;height=1;width=0;break;
-        case 6:v = {1,-side+1};             u = {1,-side-1};                    length=2;height=1;width=0;break;
-        case 7:v = {1,-side+1};             u = {1,-side-1};                    length=2;height=1;width=0;break;
-        case 8:v = {0,-side};               u = {0,-side};                      length=1;height=1;width=1;break;
-        case 9:v = {0,-side+1};             u = {1,-side-1};                    length=2;height=1;width=0;break;
-        case 10:v= {0,-side};               u = {1,-side-2};                    length=1;height=1;width=1;break;
-        case 11:v= {0,-side+1,(-2*side)+1}; u = {1,-side-1,-2*side};            length=2;height=2;width=0;break;
-        case 12:v= {0,-side,-2*side};       u = {1,-side-1,-2*side-1};          length=1;height=2;width=1;break;
-        case 13:v= {0};                     u = {0,-side-3};                    length=1;height=1;width=2;break;  
-        case 14:v= {0,-side,2*-side,3*-side};u = {1,-side-1,-2*side-1,-3*side-1};length=1;height=3;width=0;break;
-        case 15:v= {1,-side+1};             u = {0,-side};                      length=2;height=1;width=1;break;
-        case 16:v= {0,-side+1};             u = {1,-side-2};                    length=2;height=1;width=1;break;
-        case 17:v= {0,-side+1,2*side};      u = {1,-side-1,(2*side)-1};         length=2;height=2;width=0;break;
-        case 18:v= {0,-side,2*side};        u = {1,-side-2,(2*side)-1};         length=1;height=2;width=1;break;
-        case 19:v= {0,-side+1,2*side};      u = {1,-side-2,(2*side)-1};         length=2;height=2;width=1;break;
+        case 1:v = {0};                     u = {1};                            length=1;width=0;break;
+        case 2:v = {1};                     u = {1};                            length=2;width=0;break;
+        case 3:v = {1,-side+2};             u = {1,-side};                      length=3;width=0;break;
+        case 4:v = {3};                     u = {1};                            length=4;width=0;break;
+        case 5:v = {0,-side};               u = {1,-side-1};                    length=1;width=0;break;
+        case 6:v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 7:v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 8:v = {0,-side};               u = {0,-side};                      length=1;width=1;break;
+        case 9:v = {0,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 10:v= {0,-side};               u = {1,-side-2};                    length=1;width=1;break;
+        case 11:v= {0,-side+1,(-2*side)+1}; u = {1,-side-1,-2*side};            length=2;width=0;break;
+        case 12:v= {0,-side,-2*side};       u = {1,-side-1,-2*side-1};          length=1;width=1;break;
+        case 13:v= {0};                     u = {0,-side-3};                    length=1;width=2;break;  
+        case 14:v= {0,-side,2*-side,3*-side};u = {1,-side-1,-2*side-1,-3*side-1};length=1;width=0;break;
+        case 15:v= {1,-side+1};             u = {0,-side};                      length=2;width=1;break;
+        case 16:v= {0,-side+1};             u = {1,-side-2};                    length=2;width=1;break;
+        case 17:v= {0,-side+1,2*side};      u = {1,-side-1,(2*side)-1};         length=2;width=0;break;
+        case 18:v= {0,-side,2*side};        u = {1,-side-2,(2*side)-1};         length=1;width=1;break;
+        case 19:v= {0,-side+1,2*side};      u = {1,-side-2,(2*side)-1};         length=2;width=1;break;
     }
 }
 
 void Tetris::createShape() {
     map[last] = ' ';
     map[head] = 'x';
-    if(figure == 2) { 
+    if (figure == 2) { 
         map[last+1] = ' ';
         map[head+1] = 'x';
         if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 3) { 
+    if (figure == 3) { 
         map[last+1] = map[last-side+1] = map[last-side+2] = ' ';
         map[head+1] = map[head-side+1] = map[head-side+2] = 'x';
         if (map[head+side+1] == 'x' || map[head+2] == 'x') head = (side-1)/2;
     }
-    if(figure == 4) { 
+    if (figure == 4) { 
         map[last+1] = map[last+2] = map[last+3] = ' ';
         map[head+1] = map[head+2] = map[head+3] = 'x';
         if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = (side-1)/2;
     }
-    if(figure == 5) { 
+    if (figure == 5) { 
         map[last-side] = ' ';
         map[head-side] = 'x';
     }
-    if(figure == 6) { 
+    if (figure == 6) { 
         map[last-side] = map[last+1] = map[last-side+1] = ' ';
         map[head-side] = map[head+1] = map[head-side+1] = 'x';
         if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 7) { 
+    if (figure == 7) { 
         map[last-side] = map[last+1] = ' ';
         map[head-side] = map[head+1] = 'x';
         if (map[head+side+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 8) { 
+    if (figure == 8) { 
         map[last-side] = map[last-1] = ' ';
         map[head-side] = map[head-1] = 'x';
         if (map[head+side-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 9) { 
+    if (figure == 9) { 
         map[last-side] = map[last-side+1] = ' ';
         map[head-side] = map[head-side+1] = 'x';
         if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 10) { 
+    if (figure == 10) { 
         map[last-side] = map[last-side-1] = ' ';
         map[head-side] = map[head-side-1] = 'x';
         if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 11) { 
+    if (figure == 11) { 
         map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' ';
         map[head-side] = map[head-side+1] = map[head-(2*side)+1] = 'x';
         if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 12) { 
+    if (figure == 12) { 
         map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' ';
         map[head-side] = map[head-side-1] = map[head-(2*side)-1] = 'x';
         if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 13) { 
+    if (figure == 13) { 
         map[last-1] = map[last-side-1] = map[last-side-2] = ' ';
         map[head-1] = map[head-side-1] = map[head-side-2] = 'x';
         if (map[head+side-1] == 'x' || map[head-2] == 'x') head = (side-1)/2;
     }
-    if(figure == 14) { 
+    if (figure == 14) { 
         map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' ';
         map[head-side] = map[head-(2*side)]= map[head-(3*side)] = 'x';
     }
-    if(figure == 15) { 
+    if (figure == 15) { 
         map[last-1] = map[last+1] = map[last-side] = ' ';
         map[head-1] = map[head+1] = map[head-side] = 'x';
         if (map[head+side+1] == 'x'|| map[head+side-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 16) { 
+    if (figure == 16) { 
         map[last-side] = map[last-side+1] = map[last-side-1] = ' ';
         map[head-side] = map[head-side+1] = map[head-side-1] = 'x';
         if (map[head+1] == 'x'|| map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 17) { 
+    if (figure == 17) { 
         map[last-side] = map[last-(2*side)] = map[last-side+1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side+1] = 'x';
         if (map[head+1] == 'x') head = (side-1)/2;
     }
-    if(figure == 18) { 
+    if (figure == 18) { 
         map[last-side] = map[last-(2*side)] = map[last-side-1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side-1] = 'x';
         if (map[head-1] == 'x') head = (side-1)/2;
     }
-    if(figure == 19) { 
+    if (figure == 19) { 
         map[last-side] = map[last-(2*side)] = map[last-side-1] = map[last-side+1] = ' ';
         map[head-side] = map[head-(2*side)] = map[head-side-1] = map[head-side+1] = 'x';
         if (map[head-1] == 'x' || map[head+1] == 'x') head = (side-1)/2;
@@ -237,7 +237,7 @@ void Tetris::createShape() {
 }
 
 void Tetris::changeShapeRight() {
-    switch(figure) { 
+    switch (figure) { 
         case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
         case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head++; if(head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
@@ -303,19 +303,20 @@ void Tetris::gameControl() {
     last = head;
     convertShape();
     hitWall = false;
+    height = v.size()-1;
     if (value == 'd') {
-        for(index = 0; index < v.size(); index++) {
+        for(index = 0; index <= height; index++) {
             if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
         }
         head += !hitWall;
     }
     else if (value == 'a') {
-        for(index = 0; index < u.size(); index++) {
-            if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
+        for (index = 0; index <= height; index++) {
+            if (map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
         }
         head -= !hitWall;
     }
-    switch(value) {
+    switch (value) {
         case 'w': changeShapeRight();   break;
         case 'q': changeShapeLeft();    break;
         case 't': gameToggle(false);    break;
@@ -351,16 +352,16 @@ void Tetris::gameDisplay() {
 }
 
 void Tetris::fileManage(std::string data, char option) {
-    if(option == 'i') { 
+    if (option == 'i') { 
         std::ifstream fin(saveFileName); 
-        if(!fin) {
+        if (!fin) {
             std::cout << "Welcome to Tetris!"; 
             initialize();
         }
         else {
             std::string save_data;
             while (fin.good()) getline(fin,save_data);
-            if(save_data.size() < 4 || save_data.size() > 7 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
+            if (save_data.size() < 4 || save_data.size() > 7 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
                 handleFileStatus();
                 fin.close();
                 abort();
@@ -377,12 +378,12 @@ void Tetris::fileManage(std::string data, char option) {
         }
         fin.close();
     }
-    else if(option == 's') {
+    else if (option == 's') {
         std::ofstream fout(saveFileName,std::ios::app);
         fout << std::endl << data;
         fout.close();
     }
-    else if(option == 'o') {
+    else if (option == 'o') {
         std::ofstream fout(saveFileName, std::ios::app);
         if(stoi(data) > highscore) { 
             highscore = stoi(data);
