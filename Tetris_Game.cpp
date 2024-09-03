@@ -251,7 +251,7 @@ void Tetris::changeShapeRight() {
         case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 17;map[last-1] = map[last+1] = ' '; if(head%side == 1) head--; break;
-        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; head++; break;
+        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; break;
         case 17:figure = 16;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
         case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
@@ -272,7 +272,7 @@ void Tetris::changeShapeLeft() {
         case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head-=2; break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 18;map[last-1] = map[last+1] = ' '; break;
-        case 16:figure = 17;map[last-side+1] = map[last-side-1] = ' '; break;
+        case 16:figure = 17;map[last-side+1] = map[last-side-1] = ' '; if(head%side == 1) head--; break;
         case 17:figure = 15;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
         case 18:figure = 16;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
