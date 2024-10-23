@@ -11,14 +11,13 @@
 #include <termios.h>
 #include <unistd.h>
 #include <ctime>
-#define MAX_SHAPES 19
+#define  MAX_SHAPES 19
 
 class Tetris {
 private:
-    short levelCounter, score, figure, levelShift, block;
-    short index, head, last, highscore, listCounter;
-    short speed, pace, side, area, horz, vert;
-    short length, height, width;
+    short length, height, width, levelCounter, score, block;
+    short figure, index, head, last, highscore, listCounter;
+    short speed, pace, side, area, horz, vert, levelShift;
     bool hitWall;
     char input, value;
     std::vector<int> u, v, shapeList;
@@ -251,7 +250,7 @@ void Tetris::changeShapeRight() {
         case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
         case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 17;map[last-1] = map[last+1] = ' '; if(head%side == 1) head--; break;
-        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; break;
+        case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; head++; break;
         case 17:figure = 16;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
         case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
     }
@@ -284,7 +283,6 @@ void Tetris::readValue() {
     newt = oldt;
     newt.c_lflag &= ~(ICANON);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
     input = getchar();
     if (input == 'd' || input == 'a' || input == 'w' || input == 't' || input == 'q') value = input;
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
@@ -305,15 +303,11 @@ void Tetris::gameControl() {
     hitWall = false;
     height = v.size()-1;
     if (value == 'd') {
-        for(index = 0; index <= height; index++) {
-            if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
-        }
+        for(index = 0; index <= height; index++) if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
         head += !hitWall;
     }
     else if (value == 'a') {
-        for (index = 0; index <= height; index++) {
-            if (map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
-        }
+        for (index = 0; index <= height; index++) if (map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
         head -= !hitWall;
     }
     switch (value) {
@@ -325,7 +319,7 @@ void Tetris::gameControl() {
 }
 
 void Tetris::gameAlgorithm() {
-    if (map[head + side] == 'x' && head - (height * side) <= side) gameToggle(false);
+    if (map[head+side] == 'x' && head - (height * side) <= side) gameToggle(false);
     system("clear");
     head += side;
     value = 'm';
@@ -345,7 +339,7 @@ void Tetris::gameDisplay() {
         for (horz = 0; horz < side; horz++) {
             if (horz == side - 1 || horz == 0) std::cout << "|";
             if (horz == side - 1 && vert  == side - 1) std::cout << std::endl << bottom;
-            std::cout << map[(vert  * side) + horz];
+            std::cout << map[(vert*side)+horz];
         }
         std::cout << std::endl;
     }
@@ -354,10 +348,7 @@ void Tetris::gameDisplay() {
 void Tetris::fileManage(std::string data, char option) {
     if (option == 'i') { 
         std::ifstream fin(saveFileName); 
-        if (!fin) {
-            std::cout << "Welcome to Tetris!"; 
-            initialize();
-        }
+        if (!fin) std::cout << "Welcome to Tetris!"; 
         else {
             std::string save_data;
             while (fin.good()) getline(fin,save_data);
@@ -370,12 +361,12 @@ void Tetris::fileManage(std::string data, char option) {
             side = save_data[1] - '0';
             side*= 10;
             side+= save_data[2] - '0';
-            initialize();
             std::cout << "Welcome back to Tetris!\nThe highscore is ";
             if (highscore < stoi(save_data.substr(3))) highscore = stoi(save_data.substr(3));
             std::cout << highscore;
             speedSelector();
         }
+        initialize();
         fin.close();
     }
     else if (option == 's') {
