@@ -66,7 +66,7 @@ void Tetris::initialize() {
     map = std::string(area,' ');
     srand((unsigned) time(0));
     for (index = 0; index < area; index++) shapeList.push_back((rand() % MAX_SHAPES) + 1);
-    figure = shapeList[listCounter];
+    figure = shapeList[listCounter+1];
 }
 
 void Tetris::blockPreview() {
@@ -302,15 +302,15 @@ void Tetris::gameControl() {
     convertShape();
     hitWall = false;
     height = v.size()-1;
-    if (value == 'd') {
-        for(index = 0; index <= height; index++) if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
-        head += !hitWall;
-    }
-    else if (value == 'a') {
-        for (index = 0; index <= height; index++) if (map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
-        head -= !hitWall;
-    }
     switch (value) {
+        case 'd' :
+            for (index = 0; index <= height; index++) if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
+            head += !hitWall;
+            break;
+        case 'a' :
+            for (index = 0; index <= height; index++) if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
+            head -= !hitWall;
+            break;
         case 'w': changeShapeRight();   break;
         case 'q': changeShapeLeft();    break;
         case 't': gameToggle(false);    break;
