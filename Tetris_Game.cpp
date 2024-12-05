@@ -457,7 +457,7 @@ void Tetris::mainMenu() {
     system("clear");
     if (choice == '1') gameToggle(true);
     if (choice == '2') {
-        std::cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n "
+        std::cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n ";
         std::cout << "\tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT\n \tt TO QUIT GAME \n";
         sleep(3);
         system("clear");
