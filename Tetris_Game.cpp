@@ -157,7 +157,8 @@ void Tetris::createShape() {
     if (figure == 4) { 
         map[last+1] = map[last+2] = map[last+3] = ' ';
         map[head+1] = map[head+2] = map[head+3] = 'x';
-        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' || map[head+side+3] == 'x') head = (side-1)/2;
+        if (map[head+side+1] == 'x' || map[head+side+2] == 'x' 
+            || map[head+side+3] == 'x') head = (side-1)/2;
     }
     if (figure == 5) { 
         map[last-side] = ' ';
@@ -237,43 +238,73 @@ void Tetris::createShape() {
 
 void Tetris::changeShapeRight() {
     switch (figure) { 
-        case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
-        case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head++; if(head%side == side-4) head+=2; break;
+        case 2: figure = 5; map[last+1] = ' '; 
+                if (head%side == side-3) head++; break;
+        case 3: figure = 12;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; 
+                if (head%side == 0) head++; 
+                if (head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
-        case 5: figure = 2; map[last-side] = ' '; if(head%side == side-2) head--; break;
+        case 5: figure = 2; map[last-side] = ' '; 
+                if (head%side == side-2) head--; break;
         case 7: figure = 9; map[last+1] = ' '; break;
         case 8: figure = 7; map[last-1] = ' '; head--; break;
         case 9: figure = 10;map[last-side+1] = ' '; head++; break;
         case 10:figure = 8; map[last-side-1] = ' '; break;
-        case 11:figure = 13;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; if(head%side == 0) head+=2; if(head%side == side-3) head++; break;
-        case 12:figure = 3; map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; if(head%side == 1) head--; if(head%side == side-2) head-=2; break;
-        case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head--; break;
-        case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
-        case 15:figure = 17;map[last-1] = map[last+1] = ' '; if(head%side == 1) head--; break;
+        case 11:figure = 13;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; 
+                if (head%side == 0) head+=2; 
+                if (head%side == side-3) head++; break;
+        case 12:figure = 3; map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; 
+                if (head%side == 1) head--; 
+                if (head%side == side-2) head-=2; break;
+        case 13:figure = 11;map[last-1] = map[last-side-1] = map[last-side-2] = ' '; 
+                if (head%side == 2)head-=2; 
+                if (head%side == side-2) head--; break;
+        case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; 
+                if (head%side >= side-5) head -= head-side+5; break;
+        case 15:figure = 17;map[last-1] = map[last+1] = ' '; 
+                if (head%side == 1) head--; break;
         case 16:figure = 18;map[last-side+1] = map[last-side-1] = ' '; head++; break;
-        case 17:figure = 16;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
-        case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
+        case 17:figure = 16;map[last-(2*side)] = map[last-side+1] = ' '; 
+                if (head%side == 0) head++; break;
+        case 18:figure = 15;map[last-(2*side)] = map[last-side-1] = ' '; 
+                if (head%side == 0) head++; 
+                if (head%side == side-2) head--; break;
     }
 }
 
 void Tetris::changeShapeLeft() {
     switch(figure) { 
-        case 2: figure = 5; map[last+1] = ' '; if(head%side == side-3) head++; break;
-        case 3: figure = 13;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; if(head%side == 0) head+=2; if(head%side == side-4) head+=2; break;
+        case 2: figure = 5; map[last+1] = ' '; 
+                if (head%side == side-3) head++; break;
+        case 3: figure = 13;map[last+1] = map[last-side+1] = map[last-side+2] = ' '; 
+                if (head%side == 0) head+=2; 
+                if (head%side == side-4) head+=2; break;
         case 4: figure = 14;map[last+1] = map[last+2] = map[last+3] = ' '; break;
-        case 5: figure = 2; map[last-side] = ' '; if(head%side == side-2) head--; break;
+        case 5: figure = 2; map[last-side] = ' '; 
+                if (head%side == side-2) head--; break;
         case 7: figure = 8; map[last+1] = ' '; head++; break;
         case 8: figure = 10;map[last-1] = ' '; break;
         case 9: figure = 7; map[last-side+1] = ' '; break;
         case 10:figure = 9; map[last-side-1] = ' '; head--; break;
-        case 11:figure = 12;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; if(head%side == 0) head++; if(head%side == side-3) head++; break;
-        case 12:figure = 11;map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; if(head%side == 1) head--; if(head%side == side-2) head--; break;
-        case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' '; if(head%side == 2)head-=2; if(head%side == side-2) head-=2; break;
-        case 14:figure = 4; map[last-side] = map[last-(2*side)]= map[last-(3*side)] = ' '; if(head%side >= side-5) head -= head-side+5; break;
+        case 11:figure = 12;map[last-side] = map[last-side+1] = map[last-(2*side)+1] = ' '; 
+                if (head%side == 0) head++; 
+                if (head%side == side-3) head++; break;
+        case 12:figure = 11;map[last-side] = map[last-side-1] = map[last-(2*side)-1] = ' '; 
+                if (head%side == 1) head--; 
+                if (head%side == side-2) head--; break;
+        case 13:figure = 3; map[last-1] = map[last-side-1] = map[last-side-2] = ' '; 
+                if (head%side == 2)head-=2; 
+                if (head%side == side-2) head-=2; break;
+        case 14:figure = 4; map[last-side] = map[last-(2*side)] = map[last-(3*side)] = ' '; 
+                if (head%side >= side-5) head -= head-side+5; break;
         case 15:figure = 18;map[last-1] = map[last+1] = ' '; break;
-        case 16:figure = 17;map[last-side+1] = map[last-side-1] = ' '; if(head%side == 1) head--; break;
-        case 17:figure = 15;map[last-(2*side)] = map[last-side+1] = ' '; if(head%side == 0) head++; break;
-        case 18:figure = 16;map[last-(2*side)] = map[last-side-1] = ' '; if(head%side == 0) head++; if(head%side == side-2) head--; break;
+        case 16:figure = 17;map[last-side+1] = map[last-side-1] = ' '; 
+                if (head%side == 1) head--; break;
+        case 17:figure = 15;map[last-(2*side)] = map[last-side+1] = ' '; 
+                if (head%side == 0) head++; break;
+        case 18:figure = 16;map[last-(2*side)] = map[last-side-1] = ' '; 
+                if (head%side == 0) head++; 
+                if (head%side == side-2) head--; break;
     }
 }
 
@@ -304,11 +335,15 @@ void Tetris::gameControl() {
     height = v.size()-1;
     switch (value) {
         case 'd' :
-            for (index = 0; index <= height; index++) if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
+            for (index = 0; index <= height; index++) {
+                if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
+            }
             head += !hitWall;
             break;
         case 'a' :
-            for (index = 0; index <= height; index++) if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
+            for (index = 0; index <= height; index++) {
+                if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
+            }
             head -= !hitWall;
             break;
         case 'w': changeShapeRight();   break;
@@ -352,7 +387,8 @@ void Tetris::fileManage(std::string data, char option) {
         else {
             std::string save_data;
             while (fin.good()) getline(fin,save_data);
-            if (save_data.size() < 4 || save_data.size() > 7 || !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
+            if (save_data.size() < 4 || save_data.size() > 7 || 
+                    !all_of(save_data.begin(), save_data.end(), ::isdigit)) {
                 handleFileStatus();
                 fin.close();
                 abort();
@@ -421,7 +457,8 @@ void Tetris::mainMenu() {
     system("clear");
     if (choice == '1') gameToggle(true);
     if (choice == '2') {
-        std::cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n \tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT\n \tt TO QUIT GAME \n";
+        std::cout << "PRESS\n \ta TO MOVE LEFT\n \td TO MOVE RIGHT \n "
+        std::cout << "\tw TO ROTATE RIGHT \n \tq TO ROTATE LEFT\n \tt TO QUIT GAME \n";
         sleep(3);
         system("clear");
         mainMenu();
