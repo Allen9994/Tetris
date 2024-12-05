@@ -49,7 +49,7 @@ private:
                  : levelCounter(0), figure(0), levelShift(0), block(0), last(0),
                    score(0), highscore(0), listCounter(2), speed(1000), pace(2),
                    head(0), length(0), height(0), width(0), side(14), input(' '),
-                   saveFileName("tetris_data.txt"), area(0), hitWall(false), value('m') {}
+                   saveFileName("tetris_data.dat"), area(0), hitWall(false), value('m') {}
     void start() {
         fileManage("0", 'i');
         mainMenu();
@@ -382,7 +382,7 @@ void Tetris::gameDisplay() {
 
 void Tetris::fileManage(std::string data, char option) {
     if (option == 'i') { 
-        std::ifstream fin(saveFileName); 
+        std::ifstream fin(saveFileName, std::ios::binary); 
         if (!fin) std::cout << "Welcome to Tetris!"; 
         else {
             std::string save_data;
@@ -406,12 +406,12 @@ void Tetris::fileManage(std::string data, char option) {
         fin.close();
     }
     else if (option == 's') {
-        std::ofstream fout(saveFileName,std::ios::app);
+        std::ofstream fout(saveFileName,std::ios::app | std::ios::binary);
         fout << std::endl << data;
         fout.close();
     }
     else if (option == 'o') {
-        std::ofstream fout(saveFileName, std::ios::app);
+        std::ofstream fout(saveFileName, std::ios::app | std::ios::binary);
         if(stoi(data) > highscore) { 
             highscore = stoi(data);
             std::cout << "HIGHSCORE! "<<highscore<<std::endl;
@@ -431,7 +431,7 @@ void Tetris::speedSelector() {
 
 void Tetris::handleFileStatus() {
     std::cout << "The save file is corrupted! \nKindly restart the game as the save file is reset\n";
-    std::ofstream fout(saveFileName, std::ios::app);
+    std::ofstream fout(saveFileName, std::ios::app | std::ios::binary);
     fout << std::endl << "2120";
     fout.close();
     sleep(1);
