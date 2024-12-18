@@ -11,7 +11,15 @@
 #include <termios.h>
 #include <unistd.h>
 #include <ctime>
+
 #define  MAX_SHAPES 19
+#define  HIGH_SPEED 1000
+#define  MED_SPEED  800
+#define  LOW_SPEED  600
+#define  MIN_MAP_SIZE 9
+#define  MAX_MAP_SIZE 16
+#define  FILE_RESET_VAL 2120
+#define  SAVE_FILE_NAME "tetris_data.dat"
 
 class Tetris {
 private:
@@ -19,7 +27,7 @@ private:
     short figure, index, head, last, highscore, listCounter;
     short speed, pace, side, area, horz, vert, levelShift;
     bool hitWall;
-    char input, value;
+    char value;
     std::vector<int> u, v, shapeList;
     std::string map, top, bottom, preview, saveFileName;
 
@@ -48,8 +56,8 @@ private:
         Tetris() 
                  : levelCounter(0), figure(0), levelShift(0), block(0), last(0),
                    score(0), highscore(0), listCounter(2), speed(1000), pace(2),
-                   head(0), length(0), height(0), width(0), side(14), input(' '),
-                   saveFileName("tetris_data.dat"), area(0), hitWall(false), value('m') {}
+                   head(0), length(0), height(0), width(0), side(14), area(0),
+                   saveFileName(SAVE_FILE_NAME), hitWall(false), value('m') {}
     void start() {
         fileManage("0", 'i');
         mainMenu();
@@ -97,13 +105,13 @@ void Tetris::blockPreview() {
 void Tetris::destroyBlocks() {
     figure = shapeList[listCounter];
     levelCounter = area-1;
-    while(levelCounter >= side) {
-        if(map[levelCounter] == 'x') block++;
-        if(block == side-1) { 
+    while (levelCounter >= side) {
+        if (map[levelCounter] == 'x') block++;
+        if (block == side-1) { 
             score++;
             std::cout<<"\a";
             levelShift = levelCounter-1;
-            while(levelShift >= 0) {
+            while (levelShift >= 0) {
                 map[levelShift+side] = map[levelShift];
                 levelShift--;
             }
@@ -119,25 +127,25 @@ void Tetris::convertShape() {
     v.clear();
     u.clear();
     switch (figure) { 
-        case 1:v = {0};                     u = {1};                            length=1;width=0;break;
-        case 2:v = {1};                     u = {1};                            length=2;width=0;break;
-        case 3:v = {1,-side+2};             u = {1,-side};                      length=3;width=0;break;
-        case 4:v = {3};                     u = {1};                            length=4;width=0;break;
-        case 5:v = {0,-side};               u = {1,-side-1};                    length=1;width=0;break;
-        case 6:v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
-        case 7:v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
-        case 8:v = {0,-side};               u = {0,-side};                      length=1;width=1;break;
-        case 9:v = {0,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
-        case 10:v= {0,-side};               u = {1,-side-2};                    length=1;width=1;break;
-        case 11:v= {0,-side+1,(-2*side)+1}; u = {1,-side-1,-2*side};            length=2;width=0;break;
-        case 12:v= {0,-side,-2*side};       u = {1,-side-1,-2*side-1};          length=1;width=1;break;
-        case 13:v= {0};                     u = {0,-side-3};                    length=1;width=2;break;  
+        case 1: v = {0};                     u = {1};                            length=1;width=0;break;
+        case 2: v = {1};                     u = {1};                            length=2;width=0;break;
+        case 3: v = {1,-side+2};             u = {1,-side};                      length=3;width=0;break;
+        case 4: v = {3};                     u = {1};                            length=4;width=0;break;
+        case 5: v = {0,-side};               u = {1,-side-1};                    length=1;width=0;break;
+        case 6: v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 7: v = {1,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 8: v = {0,-side};               u = {0,-side};                      length=1;width=1;break;
+        case 9: v = {0,-side+1};             u = {1,-side-1};                    length=2;width=0;break;
+        case 10:v= {0,-side};                u = {1,-side-2};                    length=1;width=1;break;
+        case 11:v= {0,-side+1,(-2*side)+1};  u = {1,-side-1,-2*side};            length=2;width=0;break;
+        case 12:v= {0,-side,-2*side};        u = {1,-side-1,-2*side-1};          length=1;width=1;break;
+        case 13:v= {0};                      u = {0,-side-3};                    length=1;width=2;break;  
         case 14:v= {0,-side,2*-side,3*-side};u = {1,-side-1,-2*side-1,-3*side-1};length=1;width=0;break;
-        case 15:v= {1,-side+1};             u = {0,-side};                      length=2;width=1;break;
-        case 16:v= {0,-side+1};             u = {1,-side-2};                    length=2;width=1;break;
-        case 17:v= {0,-side+1,2*side};      u = {1,-side-1,(2*side)-1};         length=2;width=0;break;
-        case 18:v= {0,-side,2*side};        u = {1,-side-2,(2*side)-1};         length=1;width=1;break;
-        case 19:v= {0,-side+1,2*side};      u = {1,-side-2,(2*side)-1};         length=2;width=1;break;
+        case 15:v= {1,-side+1};              u = {0,-side};                      length=2;width=1;break;
+        case 16:v= {0,-side+1};              u = {1,-side-2};                    length=2;width=1;break;
+        case 17:v= {0,-side+1,2*side};       u = {1,-side-1,(2*side)-1};         length=2;width=0;break;
+        case 18:v= {0,-side,2*side};         u = {1,-side-2,(2*side)-1};         length=1;width=1;break;
+        case 19:v= {0,-side+1,2*side};       u = {1,-side-2,(2*side)-1};         length=2;width=1;break;
     }
 }
 
@@ -310,6 +318,7 @@ void Tetris::changeShapeLeft() {
 
 void Tetris::readValue() {
     static struct termios oldt, newt;
+    static char input = ' ';
     tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON);
@@ -336,13 +345,13 @@ void Tetris::gameControl() {
     switch (value) {
         case 'd' :
             for (index = 0; index <= height; index++) {
-                if(map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
+                if (map[head+side+v[index]+1] == 'x' || head%side == side-length-1) hitWall = true;
             }
             head += !hitWall;
             break;
         case 'a' :
             for (index = 0; index <= height; index++) {
-                if(map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
+                if (map[head+side+u[index]-2] == 'x' || head%side == width) hitWall = true;
             }
             head -= !hitWall;
             break;
@@ -373,7 +382,9 @@ void Tetris::gameDisplay() {
     for (vert = 0; vert < side; vert++) {
         for (horz = 0; horz < side; horz++) {
             if (horz == side - 1 || horz == 0) std::cout << "|";
-            if (horz == side - 1 && vert  == side - 1) std::cout << std::endl << bottom;
+            if (horz == side - 1 && vert  == side - 1) {
+                std::cout << std::endl << bottom;
+            }
             std::cout << map[(vert*side)+horz];
         }
         std::cout << std::endl;
@@ -412,7 +423,7 @@ void Tetris::fileManage(std::string data, char option) {
     }
     else if (option == 'o') {
         std::ofstream fout(saveFileName, std::ios::app | std::ios::binary);
-        if(stoi(data) > highscore) { 
+        if (stoi(data) > highscore) { 
             highscore = stoi(data);
             std::cout << "HIGHSCORE! "<<highscore<<std::endl;
         }
@@ -423,16 +434,16 @@ void Tetris::fileManage(std::string data, char option) {
 
 void Tetris::speedSelector() {
     switch (pace) {
-        case 1: speed = 1000; break;
-        case 3: speed = 600; break;
-        default: speed = 800; pace = 2; break;
+        case 1:  speed = HIGH_SPEED; break;
+        case 3:  speed = LOW_SPEED;  break;
+        default: speed = MED_SPEED; pace = 2; break;
     }
 }
 
 void Tetris::handleFileStatus() {
     std::cout << "The save file is corrupted! \nKindly restart the game as the save file is reset\n";
     std::ofstream fout(saveFileName, std::ios::app | std::ios::binary);
-    fout << std::endl << "2120";
+    fout << std::endl << FILE_RESET_VAL;
     fout.close();
     sleep(1);
     std::cout << "Terminating..\n";
@@ -467,13 +478,13 @@ void Tetris::mainMenu() {
         std::string value_entered;
         std::cout << "Control the Block Speed. PRESS\n1 : Easy\n2 : Medium\n3 : Hard\n";
         std::cin >> value_entered;
-        if(all_of(value_entered.begin(),value_entered.end(), ::isdigit)) pace = stoi(value_entered);
+        if (all_of (value_entered.begin(),value_entered.end(), ::isdigit)) pace = stoi(value_entered);
         speedSelector();
         std::cout << "Enter the map size of range[10-15]\n";
         std::cin >> value_entered;
-        if(all_of(value_entered.begin(),value_entered.end(), ::isdigit)) {
+        if (all_of (value_entered.begin(),value_entered.end(), ::isdigit)) {
             short num = stoi(value_entered);
-            if(num > 9 && num < 16) {
+            if (num > MIN_MAP_SIZE && num < MAX_MAP_SIZE) {
                 side = num;
                 initialize();
             }
